@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
-import { INCREMENT_COUNT } from './actions'
+import { INCREMENT_COUNT } from '../actions/actions'
 
 const initialState = {
   count: 0,

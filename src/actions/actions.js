@@ -1,4 +1,4 @@
-import { incrementCount } from "./countAPI"
+import { incrementCount } from "./api"
 
 export const INCREMENT_COUNT = 'INCREMENT_COUNT'
 

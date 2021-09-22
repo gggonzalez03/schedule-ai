@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { connect } from 'react-redux';
-import { incrementCountAction } from './actions'
+import { incrementCountAction } from './actions/actions'
 
 function App({ increment, count }) {
   console.log(count)
