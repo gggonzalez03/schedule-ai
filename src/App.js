@@ -1,25 +1,22 @@
-import React from 'react';
-import './App.css';
-import { connect } from 'react-redux';
-import { incrementCountAction } from './actions/actions'
+import React from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import "./App.css";
+import HomePage from "./pages/home/HomePage";
+import Template from "./pages/template/Template";
 
-function App({ increment, count }) {
-  console.log(count)
+function App() {
   return (
-    <div className="App">
-      <button onClick={increment}>{count}</button>
-    </div>
+    <Router>
+      <Switch>
+        <Route path="/template">
+          <Template></Template>
+        </Route>
+        <Route path="/">
+          <HomePage></HomePage>
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    count: state.count,
-  }
-}
-
-const mapDispatchToProps = {
-  increment: incrementCountAction,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

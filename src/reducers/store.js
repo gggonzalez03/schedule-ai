@@ -1,10 +1,10 @@
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
-import { INCREMENT_COUNT } from '../actions/actions'
+import { INCREMENT_COUNT } from "../actions/actions";
 
 const initialState = {
   count: 0,
-}
+};
 
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -12,10 +12,10 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         count: action.payload,
-      }
+      };
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default createStore(rootReducer, applyMiddleware(thunk))
+export default createStore(rootReducer, applyMiddleware(thunk));
