@@ -1,4 +1,44 @@
 #homepage-main {
   display: flex;
-  background-color: red;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 50%;
+  margin-top: 10em;
+}
+
+#homepage-logo {
+  width: 250px;
+  height: 132px;
+}
+
+#homepage-login {
+  margin: 0.5em;
+  margin-bottom: 1em;
+}
+
+#homepage-login-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  color: #E5C09C;
+  font-size: 0.75em;
+  margin-bottom: 2em;
+  margin-top: 2em;
+}
+
+#homepage-logout-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  color: #E5C09C;
+}
+
+#homepage-description {
+  color: #8FF1AD;
+  width: 600px;
+  text-align: justify;
+  line-height: 2;
 }

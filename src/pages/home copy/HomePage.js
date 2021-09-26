@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { incrementCountAction } from "../../actions/template";
 
-import "./Template.css";
+import "./HomePage.css";
 
-class Template extends Component {
+class HomePage extends Component {
   render() {
     const { count, increment } = this.props;
     return (
-      <div id="template-main">
+      <div id="homepage-main">
         <button onClick={increment}>{count}</button>
       </div>
     );
@@ -25,4 +25,4 @@ const mapDispatchToProps = {
   increment: incrementCountAction,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Template);
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
