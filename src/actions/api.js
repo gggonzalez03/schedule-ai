@@ -1,10 +1,12 @@
+import dummyData from "./dummyData";
+
 export const googleSignIn = () => {
   return new Promise((resolve) =>
     setTimeout(() => {
       resolve({
-        userId: "helloworld",
-        fullName: "Hello World",
-        sessionId: "adkrgjnssdjfsd",
+        userId: dummyData.user.userId,
+        fullName: dummyData.user.fullName,
+        sessionId: dummyData.user.sessionId,
         isUserSignedIn: true,
       });
     }, 1000)
@@ -20,6 +22,26 @@ export const googleSignOut = () => {
     }, 1000)
   );
 };
+
+export const fetchCommitments = () => {
+  return new Promise((resolve) =>
+    setTimeout(() => {
+      resolve({
+        allCommitments: dummyData.taskview.allCommitments,
+      });
+    }, 1000)
+  );
+}
+
+export const fetchTasks = () => {
+  return new Promise((resolve) =>
+    setTimeout(() => {
+      resolve({
+        allPendingTasks: dummyData.taskview.allPendingTasks,
+      });
+    }, 1000)
+  );
+}
 
 let count = 0;
 export const incrementCount = () => {

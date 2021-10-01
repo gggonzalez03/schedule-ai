@@ -17,7 +17,7 @@ class HomePage extends Component {
         <div
           id="homepage-login-button"
           onClick={() => {
-            history.push("/main");
+            history.push("/taskdashboard");
           }}
         >
           <img
@@ -87,4 +87,6 @@ const mapDispatchToProps = {
   googleSignOut: userSignOutAction,
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(HomePage));
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(HomePage)
+);
