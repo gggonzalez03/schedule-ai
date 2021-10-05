@@ -6,6 +6,7 @@ const dummyData = {
     isUserSignedIn: false,
   },
   taskview: {
+    allPendingTasksCount: 5,
     allPendingTasks: [
       [
         {
@@ -53,12 +54,14 @@ const dummyData = {
       [],
       [],
     ],
+    selectedCommitment: null, // null will select All
     allCommitments: [
       {
         commitmentName: "CMPE 181",
         recurringStartDateTime: new Date(2021, 10, 2, 13, 0), // year, month, day, hour, minute
         recurringEndDateTime: new Date(2021, 10, 2, 15, 0),
         taskCount: 1,
+        colorScheme: "#E3F18F",
         days: ["M", "W", "F"],
       },
       {
@@ -66,6 +69,7 @@ const dummyData = {
         recurringStartDateTime: new Date(2021, 10, 2, 13, 0), // year, month, day, hour, minute
         recurringEndDateTime: new Date(2021, 10, 2, 15, 0),
         taskCount: 2,
+        colorScheme: "#8FF1AD",
         days: ["T", "Th"],
       },
     ],

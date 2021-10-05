@@ -1,28 +1,35 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { fetchCommitmentsAction, fetchTasksAction } from "../../actions/taskview";
+import {
+  fetchCommitmentsAction,
+  fetchTasksAction,
+} from "../../actions/taskview";
+import CommitmentsList from "../../components/CommitmentsList/CommitmentsList";
 
 import "./TaskDashboard.css";
 
 class TaskDashboard extends Component {
-  
-  fetchAndPrepCommitments = () => {
-    this.props.fetchCommitments();
-  }
-
-  fetchAndPrepTasks = () => {
+  componentDidMount = () => {
     this.props.fetchTasks();
-  }
+    this.props.fetchCommitments();
+  };
 
   render() {
-    const { allPendingTasks, allCommitments } = this.props;
-
-    console.log(allPendingTasks, allCommitments)
-
     return (
-      <div id="template-main">
-        <button onClick={this.fetchAndPrepTasks}></button>
+      <div id="taskdashboard-main" className="full-viewport-hv">
+        <div id="taskdashboard-left-column">
+          <img
+            id="taskdashboard-logo"
+            src={require("./img/scheduleailogo.png")}
+            alt="taskdashboard-logo"
+          />
+          <div style={{ width: "14em" }}>
+            <CommitmentsList></CommitmentsList>
+          </div>
+        </div>
+        <div id="taskdashboard-center-column"></div>
+        <div id="taskdashboard-right-column"></div>
       </div>
     );
   }
@@ -40,4 +47,6 @@ const mapDispatchToProps = {
   fetchTasks: fetchTasksAction,
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TaskDashboard));
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(TaskDashboard)
+);

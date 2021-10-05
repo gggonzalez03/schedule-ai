@@ -1,5 +1,9 @@
 import store from "./store";
-import { TASK_FETCH_TASKS, TASK_FETCH_COMMITMENTS } from "../actions/taskview";
+import {
+  TASK_FETCH_TASKS,
+  TASK_FETCH_COMMITMENTS,
+  TASK_SELECT_COMMITMENT,
+} from "../actions/taskview";
 
 export default function taskview(state = store.taskview, action) {
   switch (action.type) {
@@ -7,11 +11,17 @@ export default function taskview(state = store.taskview, action) {
       return {
         ...state,
         allPendingTasks: action.allPendingTasks,
+        allPendingTasksCount: action.allPendingTasksCount,
       };
     case TASK_FETCH_COMMITMENTS:
       return {
         ...state,
         allCommitments: action.allCommitments,
+      };
+    case TASK_SELECT_COMMITMENT:
+      return {
+        ...state,
+        selectedCommitment: action.selectedCommitment,
       };
     default:
       return state;

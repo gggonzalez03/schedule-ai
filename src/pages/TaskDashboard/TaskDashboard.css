@@ -1,4 +1,32 @@
-#template-main {
+#taskdashboard-main {
   display: flex;
-  background-color: red;
+  flex-direction: row;
+}
+
+#taskdashboard-left-column {
+  display: flex;
+  flex-direction: column;
+  padding-left: 4em;
+  padding-right: 1em;
+  padding-top: 2em;
+  align-items: center;
+}
+
+#taskdashboard-logo {
+  width: 180px;
+  height: 94px;
+  margin-bottom: 2em;
+}
+
+#taskdashboard-center-column {
+  display: flex;
+  flex: 1;
+  background-color: blue;
+}
+
+#taskdashboard-right-column {
+  display: flex;
+  flex: 1;
+  padding-right: 4em;
+  background-color: green;
 }

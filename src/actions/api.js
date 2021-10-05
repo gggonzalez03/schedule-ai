@@ -38,6 +38,7 @@ export const fetchTasks = () => {
     setTimeout(() => {
       resolve({
         allPendingTasks: dummyData.taskview.allPendingTasks,
+        allPendingTasksCount: dummyData.taskview.allPendingTasksCount,
       });
     }, 1000)
   );

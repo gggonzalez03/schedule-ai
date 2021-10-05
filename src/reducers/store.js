@@ -6,7 +6,9 @@ const store = {
     isUserSignedIn: false,
   },
   taskview: {
+    allPendingTasksCount: null,
     allPendingTasks: [],
+    selectedCommitment: null,
     allCommitments: [],
   },
 };

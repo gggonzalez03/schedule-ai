@@ -1,0 +1,24 @@
+#commitmentslist-main {
+
+}
+
+#commitmentslist-header {
+  display: flex;
+  background-color: #8FF1AD;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0.5em;
+}
+
+#commitmentslist-header > h4 {
+  color: #2D2D2D;
+  margin: 0.5em;
+  font-weight: 400;
+}
+
+#commitmentslist-header > img {
+  width: 1em;
+  height: 1em;
+  margin: 0.25em 0.5em 0.25em 0.5em;
+  cursor: pointer;
+}
