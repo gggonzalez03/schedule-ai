@@ -5,6 +5,7 @@ import {
   fetchCommitmentsAction,
   fetchTasksAction,
 } from "../../actions/taskview";
+import AddTaskBar from "../../components/AddTaskBar/AddTaskBar";
 import CommitmentsList from "../../components/CommitmentsList/CommitmentsList";
 import DashboardBar from "../../components/DashboardBar/DashboardBar";
 
@@ -32,6 +33,7 @@ class TaskDashboard extends Component {
         <div id="taskdashboard-center-column">
           <div style={{ width: "100%" }}>
             <DashboardBar></DashboardBar>
+            <AddTaskBar></AddTaskBar>
           </div>
         </div>
         <div id="taskdashboard-right-column"></div>

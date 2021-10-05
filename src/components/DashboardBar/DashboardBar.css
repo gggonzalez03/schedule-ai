@@ -5,6 +5,7 @@
   background-color: #2e2e2e;
   border-radius: 1em;
   margin-top: 9em;
+  margin-bottom: 1em;
 }
 
 .dashboardbar-info {
@@ -25,4 +26,5 @@
   color: #a8a8a8;
   font-size: small;
   margin: 1em;
+  font-weight: 300;
 }

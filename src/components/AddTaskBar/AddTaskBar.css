@@ -1,0 +1,11 @@
+#addtaskbar-main {
+  display: flex;
+  background-color: #2E2E2E;
+  color: #A8A8A8;
+  border-radius: 1em;
+  padding: 1em;
+  margin-bottom: 1em;
+  font-size: medium;
+  font-weight: 300;
+  cursor: pointer;
+}

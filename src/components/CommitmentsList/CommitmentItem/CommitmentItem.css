@@ -36,13 +36,13 @@
 }
 
 .commitmentitem-title-container > h4 {
-  font-weight: 500;
+  font-weight: 400;
   margin: 0em;
   margin-bottom: 0.25em;
 }
 
 .commitmentitem-title-container > p {
   font-size: 0.85em;
-  font-weight: 400;
+  font-weight: 300;
   margin: 0em;
 }
