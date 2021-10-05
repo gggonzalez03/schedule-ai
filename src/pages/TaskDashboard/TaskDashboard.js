@@ -8,6 +8,7 @@ import {
 import AddTaskBar from "../../components/AddTaskBar/AddTaskBar";
 import CommitmentsList from "../../components/CommitmentsList/CommitmentsList";
 import DashboardBar from "../../components/DashboardBar/DashboardBar";
+import TaskList from "../../components/TaskList/TaskList";
 
 import "./TaskDashboard.css";
 
@@ -34,6 +35,7 @@ class TaskDashboard extends Component {
           <div style={{ width: "100%" }}>
             <DashboardBar></DashboardBar>
             <AddTaskBar></AddTaskBar>
+            <TaskList></TaskList>
           </div>
         </div>
         <div id="taskdashboard-right-column"></div>

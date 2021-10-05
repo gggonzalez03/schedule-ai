@@ -1,0 +1,54 @@
+.tasklistsection-main {
+
+}
+
+.tasklistsection-header {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  padding: 1em;
+}
+
+.tasklistsection-left {
+  display: flex;
+  color: #A8A8A8;
+  align-items: center;
+  cursor: pointer;
+}
+
+.tasklistsection-dot {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background-color: #8FF1AD;
+}
+
+.tasklistsection-title {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+.tasklistsection-arrow {
+  width: 0.60em;
+  height: 0.60em;
+  filter: invert(77%) sepia(0%) saturate(1%) hue-rotate(348deg) brightness(87%) contrast(93%);
+  transform: rotate(0deg);
+}
+
+.tasklistsection-arrow-selected {
+  width: 0.60em;
+  height: 0.60em;
+  filter: invert(77%) sepia(0%) saturate(1%) hue-rotate(348deg) brightness(87%) contrast(93%);
+  transform: rotate(90deg);
+}
+
+.tasklistsection-right {
+  display: flex;
+  cursor: pointer;
+}
+
+.tasklistsection-plus {
+  width: 1em;
+  height: 1em;
+  filter: invert(77%) sepia(0%) saturate(1%) hue-rotate(348deg) brightness(87%) contrast(93%);
+}
