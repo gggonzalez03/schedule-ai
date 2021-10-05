@@ -19,6 +19,9 @@ export const fetchTasksAction = () => async (dispatch) => {
       type: TASK_FETCH_TASKS,
       allPendingTasks: result.allPendingTasks,
       allPendingTasksCount: result.allPendingTasksCount,
+      dueThisWeekCount: result.dueThisWeekCount,
+      todoASAPCount: result.todoASAPCount,
+      completedTasksCount: result.completedTasksCount,
     });
   });
 };

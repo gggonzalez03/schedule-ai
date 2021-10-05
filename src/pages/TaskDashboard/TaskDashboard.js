@@ -6,6 +6,7 @@ import {
   fetchTasksAction,
 } from "../../actions/taskview";
 import CommitmentsList from "../../components/CommitmentsList/CommitmentsList";
+import DashboardBar from "../../components/DashboardBar/DashboardBar";
 
 import "./TaskDashboard.css";
 
@@ -24,11 +25,15 @@ class TaskDashboard extends Component {
             src={require("./img/scheduleailogo.png")}
             alt="taskdashboard-logo"
           />
-          <div style={{ width: "14em" }}>
+          <div style={{ width: "20em" }}>
             <CommitmentsList></CommitmentsList>
           </div>
         </div>
-        <div id="taskdashboard-center-column"></div>
+        <div id="taskdashboard-center-column">
+          <div style={{ width: "100%" }}>
+            <DashboardBar></DashboardBar>
+          </div>
+        </div>
         <div id="taskdashboard-right-column"></div>
       </div>
     );

@@ -73,6 +73,11 @@ const dummyData = {
         days: ["T", "Th"],
       },
     ],
+    dashboard: {
+      dueThisWeekCount: 5,
+      todoASAPCount: 3,
+      completedTasksCount: 5,
+    }
   },
 };
 

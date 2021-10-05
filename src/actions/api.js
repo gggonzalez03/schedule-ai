@@ -31,7 +31,7 @@ export const fetchCommitments = () => {
       });
     }, 1000)
   );
-}
+};
 
 export const fetchTasks = () => {
   return new Promise((resolve) =>
@@ -39,10 +39,13 @@ export const fetchTasks = () => {
       resolve({
         allPendingTasks: dummyData.taskview.allPendingTasks,
         allPendingTasksCount: dummyData.taskview.allPendingTasksCount,
+        dueThisWeekCount: dummyData.taskview.dashboard.dueThisWeekCount,
+        todoASAPCount: dummyData.taskview.dashboard.todoASAPCount,
+        completedTasksCount: dummyData.taskview.dashboard.completedTasksCount,
       });
     }, 1000)
   );
-}
+};
 
 let count = 0;
 export const incrementCount = () => {

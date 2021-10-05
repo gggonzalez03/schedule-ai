@@ -1,0 +1,28 @@
+#dashboardbar-main {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  background-color: #2e2e2e;
+  border-radius: 1em;
+  margin-top: 9em;
+}
+
+.dashboardbar-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dashboardbar-info-number {
+  color: #8ff1ad;
+  font-weight: 300;
+  margin: 0.5em;
+  margin-bottom: 0em;
+  margin-top: 0.25em;
+}
+
+.dashboardbar-info-label {
+  color: #a8a8a8;
+  font-size: small;
+  margin: 1em;
+}

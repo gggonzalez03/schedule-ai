@@ -20,13 +20,12 @@
 
 #taskdashboard-center-column {
   display: flex;
-  flex: 1;
-  background-color: blue;
+  width: 54em;
+  margin-left: 1em;
+  margin-right: 1em;
 }
 
 #taskdashboard-right-column {
   display: flex;
-  flex: 1;
   padding-right: 4em;
-  background-color: green;
 }
