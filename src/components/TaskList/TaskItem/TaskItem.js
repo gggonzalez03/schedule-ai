@@ -5,23 +5,34 @@ import "./TaskItem.css";
 
 class TaskItem extends Component {
   render() {
+    const { task } = this.props;
     return (
       <div className="taskitem-main">
         <div className="taskitem-left">
-          <div className="taskitem-hollow-dot"></div>
+          <div
+            className="taskitem-hollow-dot"
+            style={{ borderColor: task.colorScheme }}
+          ></div>
           <div className="taskitem-details">
             <div className="taskitem-first-line">
-              <h4 className="taskitem-task-title">Homework #1</h4>
-              <div className="taskitem-dot"></div>
-              <h4 className="taskitem-commitment">CMPE 195A</h4>
+              <h4 className="taskitem-task-title">{task.taskName}</h4>
+              <div
+                className="taskitem-dot"
+                style={{ backgroundColor: task.colorScheme }}
+              ></div>
+              <h4 className="taskitem-commitment">{task.commitmentName}</h4>
             </div>
             <div className="taskitem-second-line">
-              <h5 className="taskitem-due">Due in 3 days</h5>
+              <h5 className="taskitem-due">
+                Due in {task.dueInXDays} day{task.dueInXDays == 1 ? "" : "s"}
+              </h5>
             </div>
           </div>
         </div>
         <div className="taskitem-right">
-          <h4 className="taskitem-time">3:00PM-4:30PM</h4>
+          <h4 className="taskitem-time" style={{ color: task.colorScheme }}>
+            {task.time}
+          </h4>
         </div>
       </div>
     );
