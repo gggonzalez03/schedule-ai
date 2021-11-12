@@ -29,3 +29,7 @@
   display: flex;
   padding-right: 4em;
 }
+
+#taskdashboard_taskedit_section {
+  margin-top: 9em;
+}
