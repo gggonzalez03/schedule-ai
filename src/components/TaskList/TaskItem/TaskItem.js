@@ -1,13 +1,27 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { taskEditFormShowAction } from "../../../actions/taskview";
 
 import "./TaskItem.css";
 
 class TaskItem extends Component {
   render() {
     const { task } = this.props;
+    const { taskEditFormShow } = this.props;
     return (
-      <div className="taskitem-main">
+      <div
+        className="taskitem-main"
+        onClick={() => {
+          taskEditFormShow({
+            taskName: task.taskName,
+            commitmentName: task.commitmentName,
+            dueDateTime: task.dueDateTime,
+            estimatedTimeOfCompletion: task.estimatedTimeOfCompletion,
+          });
+
+          console.log(task.taskName, task.dueDateTime, task.estimatedTimeOfCompletion);
+        }}
+      >
         <div className="taskitem-left">
           <div
             className="taskitem-hollow-dot"
@@ -43,6 +57,8 @@ const mapStateToProps = ({ taskview }) => {
   return {};
 };
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  taskEditFormShow: taskEditFormShowAction,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskItem);
