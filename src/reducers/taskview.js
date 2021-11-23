@@ -76,7 +76,7 @@ export default function taskview(state = store.taskview, action) {
         taskEditContent: {
           ...state.taskEditContent,
           commitmentName: action.commitmentName,
-          selectedCommitmentIndex: action.selectedCommitmentIndex,
+          commitmentId: action.commitmentId,
         },
       };
     case TASK_FORM_EDIT_TASK_NAME:
@@ -110,7 +110,7 @@ export default function taskview(state = store.taskview, action) {
         taskEditContent: {
           ...state.taskEditContent,
           taskName: action.taskName,
-          selectedCommitmentIndex: action.selectedCommitmentIndex,
+          commitmentId: action.commitmentId,
           commitmentName: action.commitmentName,
           dueDateTime: action.dueDateTime,
           estimatedTimeOfCompletion: action.estimatedTimeOfCompletion,

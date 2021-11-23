@@ -25,16 +25,16 @@ class CommitmentsList extends Component {
             selected={selectedCommitment == null}
           ></CommitmentItem>
           {allCommitments &&
-            allCommitments.map((item, index) => {
+            Object.keys(allCommitments).map((key, index) => {
               return (
                 <CommitmentItem
-                  key={index}
-                  id={index}
-                  title={item.commitmentName}
-                  subtitle={item.taskCount + " Task(s)"}
-                  dotColor={item.colorScheme}
+                  key={key}
+                  id={key}
+                  title={allCommitments[key].commitmentName}
+                  subtitle={allCommitments[key].taskCount + " Task(s)"}
+                  dotColor={allCommitments[key].colorScheme}
                   onCommitmentSelect={selectCommitment}
-                  selected={selectedCommitment == index}
+                  selected={selectedCommitment == key}
                 ></CommitmentItem>
               );
             })}

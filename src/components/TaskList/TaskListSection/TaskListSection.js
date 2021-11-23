@@ -32,7 +32,8 @@ class TaskListSection extends Component {
               return (
                 <TaskItem
                   key={sectionId + " " + index}
-                  taskId={sectionId + " " + index}
+                  taskSectionId={sectionId}
+                  taskIndex={index}
                   task={task}
                 ></TaskItem>
               );

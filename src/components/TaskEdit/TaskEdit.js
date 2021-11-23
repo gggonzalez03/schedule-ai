@@ -16,7 +16,7 @@ class TaskEdit extends Component {
     const {
       taskEditFormVisible,
       taskName,
-      selectedCommitmentIndex,
+      commitmentId,
       commitmentName,
       dueDateTime,
       estimatedTimeOfCompletion,
@@ -37,20 +37,20 @@ class TaskEdit extends Component {
               id="taskedit_commitment_select"
               className="taskedit_input"
               value={
-                selectedCommitmentIndex == null ? 0 : selectedCommitmentIndex
+                commitmentId == null ? 0 : commitmentId
               }
               onChange={(e) => {
                 this.props.taskFormEditCommitment({
-                  index: e.target.value,
+                  id: e.target.value,
                   name: allCommitments[e.target.value].commitmentName,
                 });
               }}
             >
               {allCommitments &&
-                allCommitments.map((c, i) => {
+                Object.keys(allCommitments).map((key, index) => {
                   return (
-                    <option key={"commitment" + i} value={i}>
-                      {c.commitmentName}
+                    <option key={"commitment" + key} value={key}>
+                      {allCommitments[key].commitmentName}
                     </option>
                   );
                 })}
@@ -123,7 +123,7 @@ const mapStateToProps = ({ taskview }) => {
   return {
     taskEditFormVisible: taskview.taskEditFormVisible,
     allCommitments: taskview.allCommitments,
-    selectedCommitmentIndex: taskview.taskEditContent.selectedCommitmentIndex,
+    commitmentId: taskview.taskEditContent.commitmentId,
     commitmentName: taskview.taskEditContent.commitmentName,
     taskName: taskview.taskEditContent.taskName,
     estimatedTimeOfCompletion:

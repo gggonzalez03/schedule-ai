@@ -6,21 +6,17 @@ import "./TaskItem.css";
 
 class TaskItem extends Component {
   render() {
-    const { task } = this.props;
+    const { task, taskSectionId, taskIndex } = this.props;
     const { taskEditFormShow } = this.props;
     return (
       <div
         className="taskitem-main"
         onClick={() => {
           taskEditFormShow({
-            taskName: task.taskName,
-            commitmentIndex: task.commitmentIndex,
-            commitmentName: task.commitmentName,
-            dueDateTime: task.dueDateTime,
-            estimatedTimeOfCompletion: task.estimatedTimeOfCompletion,
+            ...task,
+            taskSectionId: taskSectionId,
+            taskIndex: taskIndex,
           });
-
-          console.log(task.taskName, task.dueDateTime, task.estimatedTimeOfCompletion);
         }}
       >
         <div className="taskitem-left">

@@ -217,7 +217,7 @@ export const taskFormEditCommitmentAction = (formInput) => (dispatch) => {
   dispatch({
     type: TASK_FORM_EDIT_COMMITMENT,
     commitmentName: formInput.name,
-    selectedCommitmentIndex: formInput.index,
+    commitmentId: formInput.id,
   });
 };
 
@@ -236,11 +236,7 @@ export const taskFormEditECTAction = (formInput) => (dispatch) => {
 export const taskEditFormShowAction = (taskData) => (dispatch) => {
   dispatch({
     type: TASK_FORM_SHOW,
-    taskName: taskData.taskName,
-    selectedCommitmentIndex: taskData.commitmentIndex,
-    commitmentName: taskData.commitmentName,
-    dueDateTime: taskData.dueDateTime,
-    estimatedTimeOfCompletion: taskData.estimatedTimeOfCompletion,
+    ...taskData,
   });
 };
 
