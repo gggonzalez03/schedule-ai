@@ -14,6 +14,56 @@ export const TASK_FORM_EDIT_ECT = "TASK_FORM_EDIT_ECT";
 export const TASK_FORM_SHOW = "TASK_FORM_SHOW";
 export const TASK_FORM_HIDE = "TASK_FORM_HIDE";
 
+const rawToDateTime = (dateTimeRaw) => {
+  if (dateTimeRaw != null)
+    return (
+      "" +
+      dateTimeRaw.slice(0, 4) +
+      "/" +
+      dateTimeRaw.slice(4, 6) +
+      "/" +
+      dateTimeRaw.slice(6, 8) +
+      ", " +
+      dateTimeRaw.slice(8, 10) +
+      ":" +
+      dateTimeRaw.slice(10, 12)
+    );
+};
+
+const dateTimeToRaw = (dateTimeFormatted) => {
+  if (dateTimeFormatted != null)
+    return (
+      "" +
+      dateTimeFormatted.slice(0, 4) +
+      dateTimeFormatted.slice(5, 7) +
+      dateTimeFormatted.slice(8, 10) +
+      dateTimeFormatted.slice(12, 14) +
+      dateTimeFormatted.slice(15, 17)
+    );
+};
+
+const jsDateToRaw = (jsDate) => {
+  let dd = String(jsDate.getDate()).padStart(2, "0");
+  let mm = String(jsDate.getMonth() + 1).padStart(2, "0");
+  let yyyy = String(jsDate.getFullYear());
+
+  return yyyy + mm + dd;
+};
+
+const convertRawToJSDate = (dateTimeRaw) => {
+  return new Date(
+    dateTimeRaw.slice(0, 4),
+    dateTimeRaw.slice(4, 6),
+    dateTimeRaw.slice(6, 8),
+    dateTimeRaw.slice(8, 10),
+    dateTimeRaw.slice(10, 12)
+  );
+};
+
+const getTimeScheduleString = (start, end) => {
+  return "" + start.getHours() + ":00-" + end.getHours() + ":00";
+};
+
 export const fetchCommitmentsAction = () => async (dispatch) => {
   await api.fetchCommitments().then((result) => {
     dispatch({
@@ -23,20 +73,83 @@ export const fetchCommitmentsAction = () => async (dispatch) => {
   });
 };
 
+export const getDiffInDays = (start, end) => {
+  let diffInTime = end.getTime() - start.getTime();
+  return Math.round(diffInTime / (1000 * 3600 * 24));
+}
+
 export const fetchTasksAction = () => async (dispatch) => {
   await api.fetchTasks().then((result) => {
+    let current_day = new Date();
+    let todoASAPCount = 0;
+    let completedTasksCount = 0;
+    let dueThisWeekCount = 0;
+    let pendingTasks = new Array(7).fill().map((_, i) => {
+      let dateString = current_day.toDateString();
+      current_day.setDate(current_day.getDate() + 1);
+      return {
+        date: dateString,
+        tasks: [],
+      };
+    });
+
+    result.allTasks.sort((a, b) => {
+      return a.scheduleDateTime - b.scheduleDateTime;
+    });
+
+    current_day = new Date();
+    result.allTasks.forEach((task) => {
+      let dueDateTime = convertRawToJSDate(task.dueDateTime);
+      let scheduleDateTimeStart = convertRawToJSDate(task.scheduleDateTime);
+
+      let scheduleDateTimeEnd = convertRawToJSDate(task.scheduleDateTime);
+      scheduleDateTimeEnd.setHours(
+        scheduleDateTimeEnd.getHours() + task.estimatedTimeOfCompletion
+      );
+
+      if (task.status == "pending") {
+        let daysBeforeDue = getDiffInDays(current_day, dueDateTime);
+        let daysBeforeStart = getDiffInDays(current_day, scheduleDateTimeStart);
+        task["dueInXDays"] = daysBeforeDue;
+        task["time"] = getTimeScheduleString(
+          scheduleDateTimeStart,
+          scheduleDateTimeEnd
+        );
+        pendingTasks[daysBeforeStart]["tasks"].push(task);
+
+        if (daysBeforeDue < 7) {
+          dueThisWeekCount++;
+        }
+        if (daysBeforeDue < 2) {
+          todoASAPCount++;
+        }
+      }
+      else {
+        completedTasksCount++;
+      }
+    });
+
     dispatch({
       type: TASK_FETCH_TASKS,
-      allPendingTasks: result.allPendingTasks,
+      allPendingTasks: pendingTasks,
       allPendingTasksCount: result.allPendingTasksCount,
-      dueThisWeekCount: result.dueThisWeekCount,
-      todoASAPCount: result.todoASAPCount,
-      completedTasksCount: result.completedTasksCount,
+      dueThisWeekCount: dueThisWeekCount,
+      todoASAPCount: todoASAPCount,
+      completedTasksCount: completedTasksCount,
     });
   });
 };
 
-export const selectCommitmentAction = (index) => (dispatch) => {
+export const selectCommitmentAction = (index) => async (dispatch) => {
+  await api.login(
+    {
+      username: "username",
+      password: "password",
+    },
+    (res) => {
+      console.log(res);
+    }
+  );
   dispatch({
     type: TASK_SELECT_COMMITMENT,
     selectedCommitment: index,
@@ -81,13 +194,12 @@ export const addTaskAction = (newTask) => (dispatch) => {
   //   scheduleDateTime: new Date(2021, 10, 2, 13, 0), // year, month, day, hour, minute
   // },
 
-  // today = new Date() + 0;
-
-  console.log("here: ", store);
+  // current_day = new Date() + 0;
 
   // Fill in dummy info for now, this has to be done after API call
   newTask["taskName"] = newTask.taskName;
-  newTask["commitmentName"] = newTask.commitmentName;
+  (newTask["selectedCommitmentIndex"] = newTask.selectedCommitmentIndex),
+    (newTask["commitmentName"] = newTask.commitmentName);
   newTask["time"] = "3:00PM-4:30PM";
   newTask["estimatedTimeOfCompletion"] = newTask.estimatedTimeOfCompletion;
 
@@ -102,7 +214,11 @@ export const addTaskAction = (newTask) => (dispatch) => {
 };
 
 export const taskFormEditCommitmentAction = (formInput) => (dispatch) => {
-  dispatch({ type: TASK_FORM_EDIT_COMMITMENT, commitmentName: formInput });
+  dispatch({
+    type: TASK_FORM_EDIT_COMMITMENT,
+    commitmentName: formInput.name,
+    selectedCommitmentIndex: formInput.index,
+  });
 };
 
 export const taskFormEditTaskNameAction = (formInput) => (dispatch) => {
@@ -121,11 +237,13 @@ export const taskEditFormShowAction = (taskData) => (dispatch) => {
   dispatch({
     type: TASK_FORM_SHOW,
     taskName: taskData.taskName,
+    selectedCommitmentIndex: taskData.commitmentIndex,
     commitmentName: taskData.commitmentName,
     dueDateTime: taskData.dueDateTime,
     estimatedTimeOfCompletion: taskData.estimatedTimeOfCompletion,
   });
 };
+
 export const taskEditFormHideAction = () => (dispatch) => {
   dispatch({
     type: TASK_FORM_HIDE,

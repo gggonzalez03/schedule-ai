@@ -7,8 +7,6 @@ import TaskListSection from "./TaskListSection/TaskListSection";
 class TaskList extends Component {
   render() {
     const { allPendingTasks } = this.props;
-
-    console.log(allPendingTasks)
     
     return (
       <div id="tasklist-main">

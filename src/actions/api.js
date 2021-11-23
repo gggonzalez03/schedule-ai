@@ -1,5 +1,48 @@
 import dummyData from "./dummyData";
 
+export const baseURL = "https://schedule-ai.herokuapp.com/api/v1/"
+
+// export function login(userLogin, onSuccess, onError) {
+//   try {
+//     fetch(baseURL + "get-login-info", {
+//       method: "GET",
+//       body: JSON.stringify(userLogin)
+//     }).then((data) =>
+//       data.json()
+//       .then((res) => {
+//         if (res != undefined) {
+//           onSuccess(res)
+//         } else {
+//           onError(res)
+//         }
+//       })
+//       .catch(e => onError(e))
+//     );
+//   } catch (err) {
+//       onError(err)
+//   }
+// }
+
+export function login(userLogin, onSuccess, onError) {
+  try {
+    fetch(baseURL + "get-login-info", {
+      method: "GET",
+      // body: JSON.stringify(userLogin),
+    }).then((data) => {
+      data.json().then((res) => {
+        if (res != undefined) {
+          onSuccess(res)
+        } else {
+          onError(res)
+        }
+      })
+      .catch(e => { console.log(e)} )
+    });
+  } catch (err) {
+      onError(err)
+  }
+}
+
 export const googleSignIn = () => {
   return new Promise((resolve) =>
     setTimeout(() => {
@@ -37,6 +80,7 @@ export const fetchTasks = () => {
   return new Promise((resolve) =>
     setTimeout(() => {
       resolve({
+        allTasks: dummyData.taskview.allTasks,
         allPendingTasks: dummyData.taskview.allPendingTasks,
         allPendingTasksCount: dummyData.taskview.allPendingTasksCount,
         dueThisWeekCount: dummyData.taskview.dashboard.dueThisWeekCount,

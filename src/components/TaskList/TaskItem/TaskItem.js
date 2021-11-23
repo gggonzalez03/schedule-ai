@@ -14,6 +14,7 @@ class TaskItem extends Component {
         onClick={() => {
           taskEditFormShow({
             taskName: task.taskName,
+            commitmentIndex: task.commitmentIndex,
             commitmentName: task.commitmentName,
             dueDateTime: task.dueDateTime,
             estimatedTimeOfCompletion: task.estimatedTimeOfCompletion,

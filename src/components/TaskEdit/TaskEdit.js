@@ -16,6 +16,7 @@ class TaskEdit extends Component {
     const {
       taskEditFormVisible,
       taskName,
+      selectedCommitmentIndex,
       commitmentName,
       dueDateTime,
       estimatedTimeOfCompletion,
@@ -35,15 +36,20 @@ class TaskEdit extends Component {
             <select
               id="taskedit_commitment_select"
               className="taskedit_input"
-              type="text"
+              value={
+                selectedCommitmentIndex == null ? 0 : selectedCommitmentIndex
+              }
               onChange={(e) => {
-                this.props.taskFormEditCommitment(e.target.value);
+                this.props.taskFormEditCommitment({
+                  index: e.target.value,
+                  name: allCommitments[e.target.value].commitmentName,
+                });
               }}
             >
               {allCommitments &&
                 allCommitments.map((c, i) => {
                   return (
-                    <option key={"commitment" + i} value={c.commitmentName}>
+                    <option key={"commitment" + i} value={i}>
                       {c.commitmentName}
                     </option>
                   );
@@ -59,19 +65,33 @@ class TaskEdit extends Component {
                 this.props.taskFormEditTaskName(e.target.value);
               }}
             ></input>
-            <h4 className="taskedit_input_label">Due Date (mm/dd/yyyy)</h4>
+            <h4 className="taskedit_input_label">
+              Due Date and Time (mm/dd/yyyy, hh:mm)
+            </h4>
             <input
               className="taskedit_input"
               type="text"
-              placeholder="mm/dd/yyyy"
+              placeholder="mm/dd/yyyy, hh:mm"
+              value={dueDateTime == null ? "" : dueDateTime}
+              onChange={(e) => {
+                this.props.taskFormEditDueDateTime(e.target.value);
+              }}
             ></input>
             <h4 className="taskedit_input_label">
               Estimated Completion Time in Hours
             </h4>
             <input
               className="taskedit_input"
-              type="text"
-              placeholder="1 hour"
+              type="number"
+              placeholder="1"
+              value={
+                estimatedTimeOfCompletion == null
+                  ? ""
+                  : estimatedTimeOfCompletion
+              }
+              onChange={(e) => {
+                this.props.taskFormEditECT(e.target.value);
+              }}
             ></input>
             <div id="taskedit_buttons_container">
               <div id="taskedit_cancel_button" onClick={taskEditFormHide}>
@@ -103,11 +123,12 @@ const mapStateToProps = ({ taskview }) => {
   return {
     taskEditFormVisible: taskview.taskEditFormVisible,
     allCommitments: taskview.allCommitments,
+    selectedCommitmentIndex: taskview.taskEditContent.selectedCommitmentIndex,
     commitmentName: taskview.taskEditContent.commitmentName,
     taskName: taskview.taskEditContent.taskName,
     estimatedTimeOfCompletion:
       taskview.taskEditContent.estimatedTimeOfCompletion,
-    dueDateTime: new Date(2021, 10, 2, 13, 0), // year, month, day, hour, minute
+    dueDateTime: taskview.taskEditContent.dueDateTime,
   };
 };
 
