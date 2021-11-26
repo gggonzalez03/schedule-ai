@@ -31,26 +31,13 @@ export function signUp(userSignUp, onSuccess, onError) {
   sendXHRRequest("POST", "signup", userSignUp, onSuccess, onError);
 }
 
-export const googleSignIn = () => {
-  return new Promise((resolve) =>
-    setTimeout(() => {
-      resolve({
-        userId: dummyData.user.userId,
-        fullName: dummyData.user.fullName,
-        sessionId: dummyData.user.sessionId,
-        isUserSignedIn: true,
-      });
-    }, 1000)
-  );
-};
-
-export const googleSignOut = () => {
+export const signout = () => {
   return new Promise((resolve) =>
     setTimeout(() => {
       resolve({
         success: true,
       });
-    }, 1000)
+    }, 500)
   );
 };
 

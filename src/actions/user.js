@@ -46,7 +46,7 @@ export const userSignUpAction =
   };
 
 export const userSignOutAction = () => async (dispatch, getState) => {
-  await api.googleSignOut().then((result) => {
+  await api.signout().then((result) => {
     dispatch({
       type: USER_SIGN_OUT,
       userId: null,
