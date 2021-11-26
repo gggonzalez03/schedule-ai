@@ -1,5 +1,5 @@
 import store from "./store";
-import { USER_SIGN_IN, USER_SIGN_OUT } from "../actions/user";
+import { USER_SIGN_UP, USER_SIGN_IN, USER_SIGN_OUT } from "../actions/user";
 
 export default function user(state = store.user, action) {
   switch (action.type) {
@@ -8,7 +8,13 @@ export default function user(state = store.user, action) {
         ...state,
         userId: action.userId,
         fullName: action.fullName,
-        sessionId: action.sessionId,
+        isUserSignedIn: action.isUserSignedIn,
+      };
+    case USER_SIGN_UP:
+      return {
+        ...state,
+        userId: action.userId,
+        fullName: action.fullName,
         isUserSignedIn: action.isUserSignedIn,
       };
     case USER_SIGN_OUT:
@@ -16,7 +22,6 @@ export default function user(state = store.user, action) {
         ...state,
         userId: action.userId,
         fullName: action.fullName,
-        sessionId: action.sessionId,
         isUserSignedIn: action.isUserSignedIn,
       };
     default:

@@ -76,7 +76,7 @@ export const fetchCommitmentsAction = () => async (dispatch) => {
 export const getDiffInDays = (start, end) => {
   let diffInTime = end.getTime() - start.getTime();
   return Math.round(diffInTime / (1000 * 3600 * 24));
-}
+};
 
 export const fetchTasksAction = () => async (dispatch) => {
   await api.fetchTasks().then((result) => {
@@ -101,7 +101,6 @@ export const fetchTasksAction = () => async (dispatch) => {
     result.allTasks.forEach((task) => {
       let dueDateTime = convertRawToJSDate(task.dueDateTime);
       let scheduleDateTimeStart = convertRawToJSDate(task.scheduleDateTime);
-
       let scheduleDateTimeEnd = convertRawToJSDate(task.scheduleDateTime);
       scheduleDateTimeEnd.setHours(
         scheduleDateTimeEnd.getHours() + task.estimatedTimeOfCompletion
@@ -115,7 +114,9 @@ export const fetchTasksAction = () => async (dispatch) => {
           scheduleDateTimeStart,
           scheduleDateTimeEnd
         );
-        pendingTasks[daysBeforeStart]["tasks"].push(task);
+
+        console.log(daysBeforeStart)
+        // pendingTasks[daysBeforeStart]["tasks"].push(task);
 
         if (daysBeforeDue < 7) {
           dueThisWeekCount++;
@@ -123,8 +124,7 @@ export const fetchTasksAction = () => async (dispatch) => {
         if (daysBeforeDue < 2) {
           todoASAPCount++;
         }
-      }
-      else {
+      } else {
         completedTasksCount++;
       }
     });
@@ -143,13 +143,18 @@ export const fetchTasksAction = () => async (dispatch) => {
 export const selectCommitmentAction = (index) => async (dispatch) => {
   await api.login(
     {
-      username: "username",
-      password: "password",
+      username: "username_vish_7",
+      password: "password1",
+      repeatPassword: "password",
     },
     (res) => {
       console.log(res);
+    },
+    (e) => {
+      console.log(e);
     }
   );
+
   dispatch({
     type: TASK_SELECT_COMMITMENT,
     selectedCommitment: index,

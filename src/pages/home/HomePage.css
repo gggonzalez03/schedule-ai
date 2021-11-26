@@ -28,6 +28,50 @@
   margin-top: 2em;
 }
 
+#homepage-login-form {
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  align-items: center;
+}
+
+#homepage-login-form-input {
+  margin: 1em;
+  padding: 0.5em;
+  border-radius: 10px;
+  background-color: #222222;
+  color: white;
+  margin-bottom: 0.25em;
+}
+
+#homepage-login-form-button {
+  display: flex;
+  border-radius: 10px;
+  background-color: #222222;
+  padding: 0.5em 2em;
+  margin: 1em;
+  color: white;
+  cursor: pointer;
+  justify-content: center;
+}
+
+#homepage-login-form-button-text {
+  margin: 0em;
+  color: #8FF1AD;
+}
+
+#homepage-login-form-button-text {
+  margin: 0em;
+  cursor: pointer;
+}
+
+#homepage-login-form-form {
+  font-size: small;
+  margin: 0em;
+  color: #8FF1AD;
+  cursor: pointer;
+}
+
 #homepage-logout-button {
   display: flex;
   flex-direction: column;

@@ -1,46 +1,34 @@
 import dummyData from "./dummyData";
 
-export const baseURL = "https://schedule-ai.herokuapp.com/api/v1/"
+export const baseURL = "https://schedule-ai.herokuapp.com/api/v1/";
 
-// export function login(userLogin, onSuccess, onError) {
-//   try {
-//     fetch(baseURL + "get-login-info", {
-//       method: "GET",
-//       body: JSON.stringify(userLogin)
-//     }).then((data) =>
-//       data.json()
-//       .then((res) => {
-//         if (res != undefined) {
-//           onSuccess(res)
-//         } else {
-//           onError(res)
-//         }
-//       })
-//       .catch(e => onError(e))
-//     );
-//   } catch (err) {
-//       onError(err)
-//   }
-// }
+function sendXHRRequest(method, endpoint, data, onSuccess, onError) {
+  var xhr = new XMLHttpRequest();
+
+  xhr.open(method, baseURL + endpoint);
+  xhr.setRequestHeader("Accept", "application/json");
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      onSuccess(JSON.parse(xhr.responseText));
+    }
+  };
+
+  if (data == null) {
+    xhr.send();
+  } else {
+    var data_string = JSON.stringify(data);
+    xhr.send(data_string);
+  }
+}
 
 export function login(userLogin, onSuccess, onError) {
-  try {
-    fetch(baseURL + "get-login-info", {
-      method: "GET",
-      // body: JSON.stringify(userLogin),
-    }).then((data) => {
-      data.json().then((res) => {
-        if (res != undefined) {
-          onSuccess(res)
-        } else {
-          onError(res)
-        }
-      })
-      .catch(e => { console.log(e)} )
-    });
-  } catch (err) {
-      onError(err)
-  }
+  sendXHRRequest("POST", "login", userLogin, onSuccess, onError);
+}
+
+export function signUp(userSignUp, onSuccess, onError) {
+  sendXHRRequest("POST", "signup", userSignUp, onSuccess, onError);
 }
 
 export const googleSignIn = () => {
