@@ -307,6 +307,13 @@ export const addTaskAction = (newTask) => (dispatch) => {
 
   // current_day = new Date() + 0;
 
+  /**
+   * TODO:
+   * Cindy
+   */
+  console.log(store.getState().taskview.allPendingTasks);
+  console.log(newTask);
+
   // Fill in dummy info for now, this has to be done after API call
   newTask["taskName"] = newTask.taskName;
   (newTask["selectedCommitmentIndex"] = newTask.selectedCommitmentIndex),
