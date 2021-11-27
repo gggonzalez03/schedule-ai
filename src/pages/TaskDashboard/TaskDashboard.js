@@ -5,6 +5,7 @@ import {
   fetchCommitmentsAction,
   fetchTasksAction,
 } from "../../actions/taskview";
+import { getSession } from "../../actions/user";
 import AddTaskBar from "../../components/AddTaskBar/AddTaskBar";
 import CommitmentsList from "../../components/CommitmentsList/CommitmentsList";
 import DashboardBar from "../../components/DashboardBar/DashboardBar";
@@ -15,8 +16,12 @@ import "./TaskDashboard.css";
 
 class TaskDashboard extends Component {
   componentDidMount = () => {
-    this.props.fetchTasks();
-    this.props.fetchCommitments();
+    let username = getSession('username');
+    
+    this.props.fetchCommitments(username);
+    setTimeout(() => {
+      this.props.fetchTasks(username);
+    }, 500);
   };
 
   render() {
@@ -49,8 +54,9 @@ class TaskDashboard extends Component {
   }
 }
 
-const mapStateToProps = ({ taskview }) => {
+const mapStateToProps = ({ taskview, user }) => {
   return {
+    userId: user.userId,
     allPendingTasks: taskview.allPendingTasks,
     allCommitments: taskview.allCommitments,
   };

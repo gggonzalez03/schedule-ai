@@ -7,14 +7,7 @@ class CommitmentItem extends Component {
   render() {
     return (
       <div
-        className={
-          this.props.selected
-            ? "commitmentitem commitmentitem-selected"
-            : "commitmentitem"
-        }
-        onClick={() => {
-          this.props.onCommitmentSelect(this.props.id);
-        }}
+        className={"commitmentitem"}
       >
         <div className="commitmentitem-icon-container">
           {this.props.dotColor ? (
@@ -23,7 +16,10 @@ class CommitmentItem extends Component {
               style={{ backgroundColor: this.props.dotColor }}
             ></div>
           ) : (
-            <img className="commitmentitem-icon" src={require("./img/star.png")} />
+            <img
+              className="commitmentitem-icon"
+              src={require("./img/star.png")}
+            />
           )}
         </div>
         <div

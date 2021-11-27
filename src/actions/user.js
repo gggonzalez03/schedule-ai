@@ -4,6 +4,18 @@ export const USER_SIGN_IN = "USER_SIGN_IN";
 export const USER_SIGN_UP = "USER_SIGN_UP";
 export const USER_SIGN_OUT = "USER_SIGN_OUT";
 
+export const startSession = (username) => {
+  if (username != null) localStorage.setItem("username", username);
+};
+
+export const endSession = (id) => {
+  localStorage.removeItem(id);
+};
+
+export const getSession = (id) => {
+  return localStorage.getItem(id);
+};
+
 export const userSignInAction =
   (signInFormData) => async (dispatch, getState) => {
     await api.login(
@@ -12,13 +24,15 @@ export const userSignInAction =
         password: signInFormData.password,
       },
       (result) => {
-        console.log(result);
-        dispatch({
-          type: USER_SIGN_IN,
-          userId: result.username,
-          fullName: result.username,
-          isUserSignedIn: result.success,
-        });
+        if (result.success) {
+          startSession(result.username);
+          dispatch({
+            type: USER_SIGN_IN,
+            userId: result.username,
+            fullName: result.username,
+            isUserSignedIn: result.success,
+          });
+        }
       },
       (e) => console.log(e)
     );
@@ -33,13 +47,15 @@ export const userSignUpAction =
         repeatPassword: signUpFormData.repeatPassword,
       },
       (result) => {
-        console.log(result);
-        dispatch({
-          type: USER_SIGN_UP,
-          userId: result.username,
-          fullName: result.username,
-          isUserSignedIn: result.success,
-        });
+        if (result.success) {
+          startSession(result.username);
+          dispatch({
+            type: USER_SIGN_UP,
+            userId: result.username,
+            fullName: result.username,
+            isUserSignedIn: result.success,
+          });
+        }
       },
       (e) => console.log(e)
     );
@@ -47,6 +63,7 @@ export const userSignUpAction =
 
 export const userSignOutAction = () => async (dispatch, getState) => {
   await api.signout().then((result) => {
+    endSession('username');
     dispatch({
       type: USER_SIGN_OUT,
       userId: null,

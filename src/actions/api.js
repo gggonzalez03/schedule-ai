@@ -41,29 +41,12 @@ export const signout = () => {
   );
 };
 
-export const fetchCommitments = () => {
-  return new Promise((resolve) =>
-    setTimeout(() => {
-      resolve({
-        allCommitments: dummyData.taskview.allCommitments,
-      });
-    }, 1000)
-  );
+export const fetchCommitments = (username, onSuccess, onError) => {
+  sendXHRRequest("POST", "fetchCommitments", username, onSuccess, onError);
 };
 
-export const fetchTasks = () => {
-  return new Promise((resolve) =>
-    setTimeout(() => {
-      resolve({
-        allTasks: dummyData.taskview.allTasks,
-        allPendingTasks: dummyData.taskview.allPendingTasks,
-        allPendingTasksCount: dummyData.taskview.allPendingTasksCount,
-        dueThisWeekCount: dummyData.taskview.dashboard.dueThisWeekCount,
-        todoASAPCount: dummyData.taskview.dashboard.todoASAPCount,
-        completedTasksCount: dummyData.taskview.dashboard.completedTasksCount,
-      });
-    }, 1000)
-  );
+export const fetchTasks = (username, onSuccess, onError) => {
+  sendXHRRequest("POST", "fetchPendingTasks", username, onSuccess, onError);
 };
 
 let count = 0;

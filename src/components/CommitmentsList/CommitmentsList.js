@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { selectCommitmentAction } from "../../actions/taskview";
 import CommitmentItem from "./CommitmentItem/CommitmentItem";
 
 import "./CommitmentsList.css";
@@ -9,7 +8,6 @@ class CommitmentsList extends Component {
   render() {
     const { allCommitments, allPendingTasksCount, selectedCommitment } =
       this.props;
-    const { selectCommitment } = this.props;
 
     return (
       <div id="commitmentslist-main">
@@ -21,7 +19,6 @@ class CommitmentsList extends Component {
           <CommitmentItem
             title={"All"}
             subtitle={allPendingTasksCount + " Task(s)"}
-            onCommitmentSelect={selectCommitment}
             selected={selectedCommitment == null}
           ></CommitmentItem>
           {allCommitments &&
@@ -33,7 +30,6 @@ class CommitmentsList extends Component {
                   title={allCommitments[key].commitmentName}
                   subtitle={allCommitments[key].taskCount + " Task(s)"}
                   dotColor={allCommitments[key].colorScheme}
-                  onCommitmentSelect={selectCommitment}
                   selected={selectedCommitment == key}
                 ></CommitmentItem>
               );
@@ -54,7 +50,6 @@ const mapStateToProps = ({ taskview }) => {
 };
 
 const mapDispatchToProps = {
-  selectCommitment: selectCommitmentAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommitmentsList);

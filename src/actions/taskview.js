@@ -1,4 +1,4 @@
-import store from "../reducers/store";
+import store from "../reducers/index";
 import * as api from "./api";
 
 export const TASK_FETCH_TASKS = "TASK_FETCH_TASKS";
@@ -13,6 +13,41 @@ export const TASK_FORM_EDIT_DUE_DATE_TIME = "TASK_FORM_EDIT_DUE_DATE_TIME";
 export const TASK_FORM_EDIT_ECT = "TASK_FORM_EDIT_ECT";
 export const TASK_FORM_SHOW = "TASK_FORM_SHOW";
 export const TASK_FORM_HIDE = "TASK_FORM_HIDE";
+
+const fromDbDateTORaw = (dbToRaw) => {
+  if (dbToRaw != null) {
+    let month = parseInt(dbToRaw.slice(5, 7)) - 1;
+    return (
+      "" +
+      dbToRaw.slice(0, 4) +
+      (month < 10 ? "0" : "") +
+      month +
+      dbToRaw.slice(8, 10) +
+      dbToRaw.slice(11, 13) +
+      dbToRaw.slice(14, 16)
+    );
+  }
+};
+
+const fromRawToDb = (rawToDb) => {
+  if (rawToDb != null) {
+    let month = parseInt(rawToDb.slice(4, 6)) + 1;
+    return (
+      "" +
+      rawToDb.slice(0, 4) +
+      "-" +
+      (month < 10 ? "0" : "") +
+      month +
+      "-" +
+      rawToDb.slice(6, 8) +
+      " " +
+      rawToDb.slice(8, 10) +
+      ":" +
+      rawToDb.slice(10, 12) +
+      ":00"
+    );
+  }
+};
 
 const rawToDateTime = (dateTimeRaw) => {
   if (dateTimeRaw != null)
@@ -64,80 +99,151 @@ const getTimeScheduleString = (start, end) => {
   return "" + start.getHours() + ":00-" + end.getHours() + ":00";
 };
 
-export const fetchCommitmentsAction = () => async (dispatch) => {
-  await api.fetchCommitments().then((result) => {
-    dispatch({
-      type: TASK_FETCH_COMMITMENTS,
-      allCommitments: result.allCommitments,
-    });
-  });
+export const fetchCommitmentsAction = (username) => async (dispatch) => {
+  await api.fetchCommitments(
+    { username: username },
+    (result) => {
+      let allCommitments = null;
+
+      if (result == undefined || result == null) result = [];
+
+      allCommitments = Object.assign(
+        {},
+        ...result.map((x) => ({ [x.commitmentId]: x }))
+      );
+
+      dispatch({
+        type: TASK_FETCH_COMMITMENTS,
+        allCommitments: allCommitments != null ? allCommitments : [],
+      });
+    },
+    (e) => console.log(e)
+  );
 };
 
 export const getDiffInDays = (start, end) => {
-  let diffInTime = end.getTime() - start.getTime();
-  return Math.round(diffInTime / (1000 * 3600 * 24));
+  var one_day = 1000 * 60 * 60 * 24;
+  return Math.round((end.getTime() - start.getTime()) / one_day);
 };
 
-export const fetchTasksAction = () => async (dispatch) => {
-  await api.fetchTasks().then((result) => {
-    let current_day = new Date();
-    let todoASAPCount = 0;
-    let completedTasksCount = 0;
-    let dueThisWeekCount = 0;
-    let pendingTasks = new Array(7).fill().map((_, i) => {
-      let dateString = current_day.toDateString();
-      current_day.setDate(current_day.getDate() + 1);
-      return {
-        date: dateString,
-        tasks: [],
-      };
-    });
+export const fetchTasksAction = (username) => async (dispatch) => {
+  await api.fetchTasks(
+    { username: username },
+    (result) => {
+      if (result == null || result == undefined || result.length <= 0) return;
 
-    result.allTasks.sort((a, b) => {
-      return a.scheduleDateTime - b.scheduleDateTime;
-    });
+      let current_day = new Date();
+      let todoASAPCount = 0;
+      let completedTasksCount = 0;
+      let dueThisWeekCount = 0;
 
-    current_day = new Date();
-    result.allTasks.forEach((task) => {
-      let dueDateTime = convertRawToJSDate(task.dueDateTime);
-      let scheduleDateTimeStart = convertRawToJSDate(task.scheduleDateTime);
-      let scheduleDateTimeEnd = convertRawToJSDate(task.scheduleDateTime);
-      scheduleDateTimeEnd.setHours(
-        scheduleDateTimeEnd.getHours() + task.estimatedTimeOfCompletion
+      let pendingTasks = [];
+      let allCommitments = store.getState().taskview.allCommitments;
+
+      if (
+        allCommitments == null ||
+        allCommitments == undefined ||
+        allCommitments == []
+      )
+        return;
+
+      Object.keys(allCommitments).map((c) => {
+        allCommitments[c]["taskCount"] = 0;
+      });
+
+      console.log(allCommitments);
+
+      // Format and add necessary data
+      result.forEach((task) => {
+        task.dueDateTime = fromDbDateTORaw(task.dueDateTime);
+        task.scheduleDateTime = fromDbDateTORaw(task.scheduleDateTime);
+        task.estimatedTimeOfCompletion = task.estTimeOfCompletion;
+        task.commitmentName =
+          allCommitments[task.commitmentId.toString()] &&
+          allCommitments[task.commitmentId.toString()].commitmentName;
+        task.colorScheme =
+          allCommitments[task.commitmentId.toString()] &&
+          allCommitments[task.commitmentId.toString()].colorScheme;
+
+        if (allCommitments[task.commitmentId.toString()]) {
+          allCommitments[task.commitmentId.toString()].taskCount =
+            allCommitments[task.commitmentId.toString()] &&
+            allCommitments[task.commitmentId.toString()].taskCount + 1;
+        }
+        pendingTasks.push(task);
+      });
+
+      // Sort by task schedule date
+      pendingTasks.sort((a, b) => {
+        return a.scheduleDateTime - b.scheduleDateTime;
+      });
+
+      let firstTaskDay = convertRawToJSDate(pendingTasks[0].scheduleDateTime);
+      let lastTaskDay = convertRawToJSDate(
+        pendingTasks[pendingTasks.length - 1].scheduleDateTime
       );
 
-      if (task.status == "pending") {
-        let daysBeforeDue = getDiffInDays(current_day, dueDateTime);
-        let daysBeforeStart = getDiffInDays(current_day, scheduleDateTimeStart);
-        task["dueInXDays"] = daysBeforeDue;
-        task["time"] = getTimeScheduleString(
-          scheduleDateTimeStart,
-          scheduleDateTimeEnd
+      let daysCount = getDiffInDays(firstTaskDay, lastTaskDay);
+      let firstTaskDayCopy = new Date(firstTaskDay.getTime());
+      let pendingTasksGroupedByScheduleDate = new Array(daysCount + 1)
+        .fill()
+        .map((_, i) => {
+          let dateString = firstTaskDayCopy.toDateString();
+          firstTaskDayCopy.setDate(firstTaskDayCopy.getDate() + 1);
+          return {
+            date: dateString,
+            tasks: [],
+          };
+        });
+
+      pendingTasks.forEach((task) => {
+        let dueDateTime = convertRawToJSDate(task.dueDateTime);
+        let scheduleDateTimeStart = convertRawToJSDate(task.scheduleDateTime);
+        let scheduleDateTimeEnd = convertRawToJSDate(task.scheduleDateTime);
+        scheduleDateTimeEnd.setHours(
+          scheduleDateTimeEnd.getHours() + task.estimatedTimeOfCompletion
         );
 
-        console.log(daysBeforeStart)
-        // pendingTasks[daysBeforeStart]["tasks"].push(task);
+        if (task.status == "pending") {
+          let daysBeforeDue = getDiffInDays(current_day, dueDateTime);
+          let daysBeforeStart = getDiffInDays(
+            firstTaskDay,
+            scheduleDateTimeStart
+          );
+          task["dueInXDays"] = daysBeforeDue;
+          task["time"] = getTimeScheduleString(
+            scheduleDateTimeStart,
+            scheduleDateTimeEnd
+          );
 
-        if (daysBeforeDue < 7) {
-          dueThisWeekCount++;
-        }
-        if (daysBeforeDue < 2) {
-          todoASAPCount++;
-        }
-      } else {
-        completedTasksCount++;
-      }
-    });
+          pendingTasksGroupedByScheduleDate[daysBeforeStart]["tasks"].push(
+            task
+          );
 
-    dispatch({
-      type: TASK_FETCH_TASKS,
-      allPendingTasks: pendingTasks,
-      allPendingTasksCount: result.allPendingTasksCount,
-      dueThisWeekCount: dueThisWeekCount,
-      todoASAPCount: todoASAPCount,
-      completedTasksCount: completedTasksCount,
-    });
-  });
+          if (daysBeforeDue < 7) {
+            dueThisWeekCount++;
+          }
+          if (daysBeforeDue < 2) {
+            todoASAPCount++;
+          }
+        } else {
+          completedTasksCount++;
+        }
+      });
+
+      console.log(pendingTasksGroupedByScheduleDate);
+
+      dispatch({
+        type: TASK_FETCH_TASKS,
+        allPendingTasks: pendingTasksGroupedByScheduleDate,
+        allPendingTasksCount: result.allPendingTasksCount,
+        dueThisWeekCount: dueThisWeekCount,
+        todoASAPCount: todoASAPCount,
+        completedTasksCount: completedTasksCount,
+      });
+    },
+    (e) => console.log(e)
+  );
 };
 
 export const selectCommitmentAction = (index) => async (dispatch) => {

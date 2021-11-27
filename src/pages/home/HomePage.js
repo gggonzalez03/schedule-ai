@@ -1,22 +1,28 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { userSignUpAction, userSignInAction, userSignOutAction } from "../../actions/user";
+import {
+  userSignUpAction,
+  userSignInAction,
+  userSignOutAction,
+  getSession,
+  endSession,
+} from "../../actions/user";
 
 import "./HomePage.css";
 
 class HomePage extends Component {
   state = {
-    username: null,
-    password: null,
-    repeatPassword: null,
+    username: "",
+    password: "",
+    repeatPassword: "",
     isFormLogin: true,
   };
 
   switchForm = () => {
     this.setState({
-      username: null,
-      password: null,
+      username: "",
+      password: "",
       isFormLogin: !this.state.isFormLogin,
     });
   };
@@ -33,7 +39,7 @@ class HomePage extends Component {
 
     if (isUserSignedIn === null) {
       return null;
-    } else if (isUserSignedIn === true) {
+    } else if (isUserSignedIn === true || getSession("username") != null) {
       return (
         <div id="homepage-login-button">
           <img
@@ -45,9 +51,23 @@ class HomePage extends Component {
               history.push("/taskdashboard");
             }}
           />
-          <p style={{ marginBottom: "0em" }}>Welcome, {fullName}</p>
+          <p style={{ marginBottom: "0em" }}>Welcome, {getSession('username')}</p>
           <div id="homepage-logout-button">
-            <p onClick={userSignOut}>Sign Out</p>
+            <p
+              onClick={() => {
+                this.setState(
+                  {
+                    password: "",
+                    repeatPassword: "",
+                  },
+                  () => {
+                    userSignOut();
+                  }
+                );
+              }}
+            >
+              Sign Out
+            </p>
           </div>
         </div>
       );
@@ -55,9 +75,10 @@ class HomePage extends Component {
       return (
         <div id="homepage-login-form">
           <input
-            id="homepage-login-form-input"
+            className="homepage-login-form-input"
             type="text"
             placeholder="Username"
+            value={this.state.username}
             onChange={(e) => {
               this.setState({
                 username: e.target.value,
@@ -65,9 +86,10 @@ class HomePage extends Component {
             }}
           ></input>
           <input
-            id="homepage-login-form-input"
+            className="homepage-login-form-input"
             type="password"
             placeholder="Password"
+            value={this.state.password}
             onChange={(e) => {
               this.setState({
                 password: e.target.value,
@@ -78,9 +100,10 @@ class HomePage extends Component {
             ""
           ) : (
             <input
-              id="homepage-login-form-input"
+              className="homepage-login-form-input"
               type="password"
               placeholder="Repeat Password"
+              value={this.state.repeatPassword}
               onChange={(e) => {
                 this.setState({
                   repeatPassword: e.target.value,
@@ -88,14 +111,16 @@ class HomePage extends Component {
               }}
             ></input>
           )}
-          <div id="homepage-login-form-button" onClick={() => {
-            if (this.state.isFormLogin) {
-              userSignIn(this.state)
-            }
-            else {
-              userSignUp(this.state)
-            }
-          }}>
+          <div
+            id="homepage-login-form-button"
+            onClick={() => {
+              if (this.state.isFormLogin) {
+                userSignIn(this.state);
+              } else {
+                userSignUp(this.state);
+              }
+            }}
+          >
             <h4 id="homepage-login-form-button-text">
               {this.state.isFormLogin ? "Login" : "Signup"}
             </h4>
