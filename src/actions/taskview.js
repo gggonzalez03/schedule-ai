@@ -294,6 +294,24 @@ export const addTaskAction = (newTask) => (dispatch) => {
     console.log("Task Index is: ", newTask.taskIndex);
   }
 
+  if (newTask.taskId == undefined) {
+    // Generate scheduleDateTime using the algo
+
+    // Required for creating task on the backend
+    newTask["status"] = "pending";
+    newTask["scheduleDateTime"] = "2021-12-01 14:00:00";
+
+    // Extras for the UI
+    newTask["taskId"] = "From API result";
+    newTask["taskSectionId"] = 1;
+    // newTask["taskIndex"] = 1;
+    newTask["time"] = "14:00-16:00";
+    newTask["dueInXDays"] = 5;
+    newTask["colorScheme"] = store.getState().taskview.allCommitments[newTask.commitmentId].colorScheme;
+
+    console.log(newTask);
+  }
+
   // Fill in dummy info for now, this has to be done after API call
   // newTask["taskName"] = newTask.taskName;
   // (newTask["selectedCommitmentIndex"] = newTask.selectedCommitmentIndex),
@@ -305,10 +323,10 @@ export const addTaskAction = (newTask) => (dispatch) => {
   // newTask["scheduledInXDays"] = 1;
   // newTask["colorScheme"] = "#8FF1AD";
 
-  // dispatch({
-  //   type: TASK_ADD_TASK,
-  //   newTask: newTask,
-  // });
+  dispatch({
+    type: TASK_ADD_TASK,
+    newTask: newTask,
+  });
 };
 
 export const commitmentFormEditCommitmentAction =

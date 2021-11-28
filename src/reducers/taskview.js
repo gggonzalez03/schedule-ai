@@ -66,8 +66,8 @@ export default function taskview(state = store.taskview, action) {
       // Run algo
       // addTaskAction (call API to post to DB)
 
-      state.allPendingTasks[action.newTask.scheduledInXDays].tasks = [
-        ...state.allPendingTasks[action.newTask.scheduledInXDays].tasks,
+      state.allPendingTasks[action.newTask.taskSectionId].tasks = [
+        ...state.allPendingTasks[action.newTask.taskSectionId].tasks,
         action.newTask,
       ];
 

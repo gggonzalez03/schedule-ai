@@ -8,6 +8,7 @@ import {
   taskFormEditECTAction,
   taskEditFormHideAction,
 } from "../../actions/taskview";
+import { getSession } from "../../actions/user";
 
 import "./TaskEdit.css";
 
@@ -101,11 +102,14 @@ class TaskEdit extends Component {
               <div
                 id="taskedit_save_button"
                 onClick={() => {
+                  let username = getSession("username");
                   this.props.addTask({
+                    username,
                     taskId,
                     taskSectionId,
                     taskIndex,
                     taskName,
+                    commitmentId,
                     commitmentName,
                     dueDateTime,
                     estimatedTimeOfCompletion,
