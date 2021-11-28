@@ -109,6 +109,9 @@ export default function taskview(state = store.taskview, action) {
         taskEditFormVisible: true,
         taskEditContent: {
           ...state.taskEditContent,
+          taskId: action.taskId,
+          taskSectionId: action.taskSectionId,
+          taskIndex: action.taskIndex,
           taskName: action.taskName,
           commitmentId: action.commitmentId,
           commitmentName: action.commitmentName,

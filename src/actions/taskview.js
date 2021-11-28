@@ -151,8 +151,6 @@ export const fetchTasksAction = (username) => async (dispatch) => {
         allCommitments[c]["taskCount"] = 0;
       });
 
-      console.log(allCommitments);
-
       // Format and add necessary data
       result.forEach((task) => {
         task.dueDateTime = fromDbDateTORaw(task.dueDateTime);
@@ -231,7 +229,7 @@ export const fetchTasksAction = (username) => async (dispatch) => {
         }
       });
 
-      console.log(pendingTasksGroupedByScheduleDate);
+      // console.log(pendingTasksGroupedByScheduleDate);
 
       dispatch({
         type: TASK_FETCH_TASKS,
@@ -282,53 +280,48 @@ export const addTaskPrepareAction = (commitmentName) => (dispatch) => {
 };
 
 export const addTaskAction = (newTask) => (dispatch) => {
-  // input
-  // newTask: {
-  //   taskName: "Homework 1",
-  //   commitmentName: "CMPE 181",
-  //   dueDateTime: 0,
-  //   estimatedTimeOfCompletion: 0,
-  // }
+  if (newTask.taskId == undefined) {
+    console.log("New task should be added");
+    /**
+     * TODO: Cindy
+     * Run algorithm here
+     *
+     * Useful Data
+     * console.log(store.getState().taskview.allPendingTasks);
+     * console.log(newTask);
+     * 
+     * Notes:
+     * 
+     * taskId is the unique ID of the task, but we generate this at the backend
+     * taskSectionId is the index in allPendingTasks the task should be in
+     * taskIndex is the index within an allPendingTasks object the task should be in
+     */
 
-  // Call real API here before dispatch. Similar to line 20
-
-  // Use store to modify the new task
-
-  // Also modify task to be this format before dispatch but after API call:
-  // newTask: {
-  //   taskName: "Homework 5",
-  //   commitmentName: "CMPE 195A",
-  //   dueInXDays: 4,
-  //   estimatedTimeOfCompletion: 0,
-  //
-  //   colorScheme: "#8FF1AD",
-  //   scheduleDateTime: new Date(2021, 10, 2, 13, 0), // year, month, day, hour, minute
-  // },
-
-  // current_day = new Date() + 0;
-
-  /**
-   * TODO:
-   * Cindy
-   */
-  console.log(store.getState().taskview.allPendingTasks);
-  console.log(newTask);
+    console.log(store.getState().taskview.allPendingTasks);
+    console.log(newTask);
+    
+  } else {
+    console.log("The task should only be edited");
+    console.log("Task ID is: ", newTask.taskId);
+    console.log("Section ID is: ", newTask.taskSectionId);
+    console.log("Task Index is: ", newTask.taskIndex);
+  }
 
   // Fill in dummy info for now, this has to be done after API call
-  newTask["taskName"] = newTask.taskName;
-  (newTask["selectedCommitmentIndex"] = newTask.selectedCommitmentIndex),
-    (newTask["commitmentName"] = newTask.commitmentName);
-  newTask["time"] = "3:00PM-4:30PM";
-  newTask["estimatedTimeOfCompletion"] = newTask.estimatedTimeOfCompletion;
+  // newTask["taskName"] = newTask.taskName;
+  // (newTask["selectedCommitmentIndex"] = newTask.selectedCommitmentIndex),
+  //   (newTask["commitmentName"] = newTask.commitmentName);
+  // newTask["time"] = "3:00PM-4:30PM";
+  // newTask["estimatedTimeOfCompletion"] = newTask.estimatedTimeOfCompletion;
 
-  newTask["dueInXDays"] = 5;
-  newTask["scheduledInXDays"] = 1;
-  newTask["colorScheme"] = "#8FF1AD";
+  // newTask["dueInXDays"] = 5;
+  // newTask["scheduledInXDays"] = 1;
+  // newTask["colorScheme"] = "#8FF1AD";
 
-  dispatch({
-    type: TASK_ADD_TASK,
-    newTask: newTask,
-  });
+  // dispatch({
+  //   type: TASK_ADD_TASK,
+  //   newTask: newTask,
+  // });
 };
 
 export const taskFormEditCommitmentAction = (formInput) => (dispatch) => {
