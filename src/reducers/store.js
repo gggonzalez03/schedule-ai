@@ -19,6 +19,7 @@ const store = {
       estimatedTimeOfCompletion: null,
       startDateTime: null,
       endDateTime: null,
+      taskEditFormPartDisabled: false,
     },
     commitmentEditContent: {
       commitmentName: null,

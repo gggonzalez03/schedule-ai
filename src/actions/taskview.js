@@ -309,8 +309,8 @@ export const addTaskAction = (newTask) => async (dispatch) => {
      * taskIndex is the index within an allPendingTasks object the task should be in
      */
 
-    console.log(store.getState().taskview.allPendingTasks)
-    console.log(store.getState().taskview.allPendingTasksRaw)
+    console.log(store.getState().taskview.allPendingTasks);
+    console.log(store.getState().taskview.allPendingTasksRaw);
 
     // var current_dates_timestamp = [];
 
@@ -338,7 +338,6 @@ export const addTaskAction = (newTask) => async (dispatch) => {
     // }
 
     // console.log(target_idx);
-
   } else {
     console.log("The task should only be edited");
     console.log("Task ID is: ", newTask.taskId);
@@ -357,21 +356,20 @@ export const addTaskAction = (newTask) => async (dispatch) => {
       oldTask.dueTime == newTask.dueTime &&
       oldTask.estimatedTimeOfCompletion == newTask.estimatedTimeOfCompletion
     ) {
-      // await api.editTask(
-      //   {
-      //     taskId: oldTask.taskId,
-      //     username: oldTask.username,
-      //     commitmentId: newTask.commitmentId,
-      //     taskName: newTask.taskName,
-      //   },
-      //   (result) => {
-      //     console.log(result);
-      //     dispatch({
-      //       type: TASK_EDIT_TASK,
-      //       newTask: newTask,
-      //     });
-      //   }
-      // );
+      await api.editTask(
+        {
+          taskId: oldTask.taskId,
+          username: oldTask.username,
+          commitmentId: newTask.commitmentId,
+          taskName: newTask.taskName,
+        },
+        (result) => {
+          dispatch({
+            type: TASK_EDIT_TASK,
+            newTask: newTask,
+          });
+        }
+      );
     }
   }
 
@@ -474,9 +472,11 @@ export const taskFormEditECTAction = (formInput) => (dispatch) => {
 };
 
 export const taskEditFormShowAction = (taskData) => (dispatch) => {
+  let disableFormPart = taskData.taskId == undefined ? false : true;
   dispatch({
     type: TASK_FORM_SHOW,
     ...taskData,
+    taskEditFormPartDisabled: disableFormPart,
   });
 };
 

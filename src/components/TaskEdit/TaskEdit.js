@@ -28,6 +28,7 @@ class TaskEdit extends Component {
       taskId,
       taskSectionId,
       taskIndex,
+      taskEditFormPartDisabled,
     } = this.props;
 
     let today = new Date();
@@ -97,6 +98,7 @@ class TaskEdit extends Component {
             ></input> */}
             <div id="taskedit_date_time_select">
               <select
+                disabled={taskEditFormPartDisabled}
                 id="taskedit_date_select"
                 className="taskedit_input"
                 value={dueDate == null ? 0 : dueDate}
@@ -114,6 +116,7 @@ class TaskEdit extends Component {
                   })}
               </select>
               <select
+                disabled={taskEditFormPartDisabled}
                 id="taskedit_time_select"
                 className="taskedit_input"
                 value={dueTime == null ? 0 : dueTime}
@@ -135,6 +138,7 @@ class TaskEdit extends Component {
               Estimated Completion Time in Hours
             </h4>
             <input
+              disabled={taskEditFormPartDisabled}
               className="taskedit_input"
               type="number"
               placeholder="1"
@@ -197,6 +201,7 @@ const mapStateToProps = ({ taskview }) => {
       taskview.taskEditContent.estimatedTimeOfCompletion,
     dueDate: taskview.taskEditContent.dueDate,
     dueTime: taskview.taskEditContent.dueTime,
+    taskEditFormPartDisabled: taskview.taskEditContent.taskEditFormPartDisabled,
   };
 };
 

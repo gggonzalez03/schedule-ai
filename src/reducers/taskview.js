@@ -18,6 +18,7 @@ import {
   COMMITMENT_FORM_HIDE,
   TASK_CLOSE_TASK,
   TASK_FORM_EDIT_DUE_TIME,
+  TASK_EDIT_TASK,
 } from "../actions/taskview";
 
 // export const addTaskAction = () => async (dispatch) => {
@@ -142,6 +143,7 @@ export default function taskview(state = store.taskview, action) {
           dueDate: action.dueDate,
           dueTime: action.dueTime,
           estimatedTimeOfCompletion: action.estimatedTimeOfCompletion,
+          taskEditFormPartDisabled: action.taskEditFormPartDisabled,
         },
       };
     case TASK_FORM_HIDE:
@@ -185,7 +187,7 @@ export default function taskview(state = store.taskview, action) {
         ...state,
         commitmentEditFormVisible: false,
       };
-    case TASK_CLOSE_TASK:
+    case TASK_CLOSE_TASK: {
       // console.log(
       //   state.allPendingTasks,
       //   action.taskSectionId,
@@ -205,6 +207,31 @@ export default function taskview(state = store.taskview, action) {
         ...state,
         allPendingTasks: [...allPendingTasksClone],
       };
+    }
+    case TASK_EDIT_TASK: {
+      let allPendingTasksClone = JSON.parse(
+        JSON.stringify(state.allPendingTasks)
+      );
+
+      allPendingTasksClone[action.newTask.taskSectionId].tasks[
+        action.newTask.taskIndex
+      ].commitmentId = action.newTask.commitmentId;
+      allPendingTasksClone[action.newTask.taskSectionId].tasks[
+        action.newTask.taskIndex
+      ].commitmentName = action.newTask.commitmentName;
+      allPendingTasksClone[action.newTask.taskSectionId].tasks[
+        action.newTask.taskIndex
+      ].taskName = action.newTask.taskName;
+      allPendingTasksClone[action.newTask.taskSectionId].tasks[
+        action.newTask.taskIndex
+      ].colorScheme = state.allCommitments[action.newTask.commitmentId].colorScheme;
+
+      return {
+        ...state,
+        allPendingTasks: [...allPendingTasksClone],
+        taskEditFormVisible: false,
+      };
+    }
 
     default:
       return state;
