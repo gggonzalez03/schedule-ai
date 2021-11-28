@@ -62,6 +62,7 @@ class HomePage extends Component {
                   },
                   () => {
                     userSignOut();
+                    history.push("/");
                   }
                 );
               }}

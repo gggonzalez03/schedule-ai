@@ -1,20 +1,26 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { commitmentFormShowAction } from "../../actions/taskview";
+import { userSignOutAction } from "../../actions/user";
 import CommitmentItem from "./CommitmentItem/CommitmentItem";
+import { withRouter } from "react-router";
 
 import "./CommitmentsList.css";
 
 class CommitmentsList extends Component {
   render() {
-    const { allCommitments, allPendingTasksCount, selectedCommitment } =
+    const { allCommitments, userSignOut, selectedCommitment, history } =
       this.props;
 
     return (
       <div id="commitmentslist-main">
         <div id="commitmentslist-header">
           <h4>Commitments</h4>
-          <img id="list-select-plus-icon" src={require("./img/plus.png")} onClick={this.props.commitmentFormShow}/>
+          <img
+            id="list-select-plus-icon"
+            src={require("./img/plus.png")}
+            onClick={this.props.commitmentFormShow}
+          />
         </div>
         <div id="commitmentslist-aggregate">
           {allCommitments &&
@@ -30,6 +36,15 @@ class CommitmentsList extends Component {
                 ></CommitmentItem>
               );
             })}
+        </div>
+        <div
+          id="commitmentslist-logout-button"
+          onClick={() => {
+            userSignOut();
+            history.push("/");
+          }}
+        >
+          Logout
         </div>
         <div id="commitmentslist-list"></div>
       </div>
@@ -47,6 +62,9 @@ const mapStateToProps = ({ taskview }) => {
 
 const mapDispatchToProps = {
   commitmentFormShow: commitmentFormShowAction,
+  userSignOut: userSignOutAction,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommitmentsList);
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(CommitmentsList)
+);

@@ -22,3 +22,15 @@
   margin: 0.25em 0.5em 0.25em 0.5em;
   cursor: pointer;
 }
+
+#commitmentslist-logout-button {
+  display: flex;
+  background-color: #2E2E2E;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0.5em;
+  padding: 0.5em 0.5em;
+  color: #A8A8A8;
+  cursor: pointer;
+  margin-top: 1em;
+}
