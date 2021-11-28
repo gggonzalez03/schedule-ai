@@ -139,8 +139,8 @@ export const fetchTasksAction = (username) => async (dispatch) => {
       if (result == null || result == undefined || result.length <= 0) return;
 
       let current_day = new Date();
-      let todoASAPCount = 0;
-      let completedTasksCount = 0;
+      let dueTodayCount = 0;
+      let dueTomorrowCount = 0;
       let dueThisWeekCount = 0;
 
       let pendingTasks = [];
@@ -227,11 +227,12 @@ export const fetchTasksAction = (username) => async (dispatch) => {
           if (daysBeforeDue < 7) {
             dueThisWeekCount++;
           }
-          if (daysBeforeDue < 2) {
-            todoASAPCount++;
+          if (daysBeforeDue == 0) {
+            dueTodayCount++;
           }
-        } else {
-          completedTasksCount++;
+          if (daysBeforeDue == 1) {
+            dueTomorrowCount++;
+          }
         }
       });
 
@@ -242,8 +243,8 @@ export const fetchTasksAction = (username) => async (dispatch) => {
         allPendingTasks: pendingTasksGroupedByScheduleDate,
         allPendingTasksCount: result.allPendingTasksCount,
         dueThisWeekCount: dueThisWeekCount,
-        todoASAPCount: todoASAPCount,
-        completedTasksCount: completedTasksCount,
+        dueTodayCount: dueTodayCount,
+        dueTomorrowCount: dueTomorrowCount,
       });
     },
     (e) => console.log(e)

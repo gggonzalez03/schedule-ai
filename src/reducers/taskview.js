@@ -37,8 +37,8 @@ export default function taskview(state = store.taskview, action) {
         allPendingTasksCount: action.allPendingTasksCount,
         dashboard: {
           dueThisWeekCount: action.dueThisWeekCount,
-          todoASAPCount: action.todoASAPCount,
-          completedTasksCount: action.completedTasksCount,
+          dueTodayCount: action.dueTodayCount,
+          dueTomorrowCount: action.dueTomorrowCount,
         },
       };
     case TASK_FETCH_COMMITMENTS:
