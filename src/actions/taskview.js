@@ -284,8 +284,31 @@ export const addTaskAction = (newTask) => (dispatch) => {
      * taskIndex is the index within an allPendingTasks object the task should be in
      */
 
-    console.log(store.getState().taskview.allPendingTasks);
-    console.log(newTask);
+    var current_dates_timestamp = [];
+
+    var target_due_time = newTask.dueDateTime
+    var target_length = newTask.estimatedTimeOfCompletion
+    var target_due_time_timestamp = (new Date(newTask.dueDateTime)).getTime();
+
+    (store.getState().taskview.allPendingTasks).forEach(element => {
+      current_dates_timestamp.push((new Date(element.date)).getTime());
+  });
+
+  // Sort the dates array
+  current_dates_timestamp.sort();
+
+  console.log(target_due_time_timestamp);
+  console.log(current_dates_timestamp);
+
+  var target_idx = 0;
+
+  while (target_idx < current_dates_timestamp.length 
+    & target_due_time_timestamp > current_dates_timestamp[target_idx]) {
+    target_idx++;
+  }
+  
+  console.log(target_idx);
+
   } else {
     console.log("The task should only be edited");
     console.log("Task ID is: ", newTask.taskId);
