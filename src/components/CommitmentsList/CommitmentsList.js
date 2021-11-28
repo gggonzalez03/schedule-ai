@@ -17,11 +17,6 @@ class CommitmentsList extends Component {
           <img id="list-select-plus-icon" src={require("./img/plus.png")} onClick={this.props.commitmentFormShow}/>
         </div>
         <div id="commitmentslist-aggregate">
-          <CommitmentItem
-            title={"All"}
-            subtitle={allPendingTasksCount + " Task(s)"}
-            selected={selectedCommitment == null}
-          ></CommitmentItem>
           {allCommitments &&
             Object.keys(allCommitments).map((key, index) => {
               return (

@@ -61,6 +61,10 @@ export const addTask = (task, onSuccess, onError) => {
   sendXHRRequest("POST", "addTask", task, onSuccess, onError);
 };
 
+export const editTask = (task, onSuccess, onError) => {
+  sendXHRRequest("POST", "editTask", task, onSuccess, onError);
+};
+
 
 let count = 0;
 export const incrementCount = () => {

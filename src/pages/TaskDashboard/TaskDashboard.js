@@ -26,6 +26,7 @@ class TaskDashboard extends Component {
   };
 
   render() {
+    let today = new Date().toDateString();
     return (
       <div id="taskdashboard-main" className="full-viewport-hv">
         <div id="taskdashboard-left-column">
@@ -40,6 +41,7 @@ class TaskDashboard extends Component {
         </div>
         <div id="taskdashboard-center-column">
           <div style={{ width: "100%" }}>
+            <h1 id="taskdashboard-today">{today}</h1>
             <DashboardBar></DashboardBar>
             <AddTaskBar></AddTaskBar>
             <TaskList></TaskList>

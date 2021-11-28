@@ -20,6 +20,7 @@ export const COMMITMENT_FORM_SUBMIT = "COMMITMENT_FORM_SUBMIT";
 export const COMMITMENT_FORM_SHOW = "COMMITMENT_FORM_SHOW";
 export const COMMITMENT_FORM_HIDE = "COMMITMENT_FORM_HIDE";
 export const TASK_CLOSE_TASK = "TASK_CLOSE_TASK";
+export const TASK_EDIT_TASK = "TASK_EDIT_TASK";
 
 const fromDbDateTORaw = (dbToRaw) => {
   if (dbToRaw != null) {
@@ -313,6 +314,35 @@ export const addTaskAction = (newTask) => async (dispatch) => {
     console.log("Task ID is: ", newTask.taskId);
     console.log("Section ID is: ", newTask.taskSectionId);
     console.log("Task Index is: ", newTask.taskIndex);
+
+    let oldTask =
+      store.getState().taskview.allPendingTasks[newTask.taskSectionId].tasks[
+        newTask.taskIndex
+      ];
+
+    console.log(oldTask, newTask);
+
+    if (
+      oldTask.dueDate == newTask.dueDate &&
+      oldTask.dueTime == newTask.dueTime &&
+      oldTask.estimatedTimeOfCompletion == newTask.estimatedTimeOfCompletion
+    ) {
+      // await api.editTask(
+      //   {
+      //     taskId: oldTask.taskId,
+      //     username: oldTask.username,
+      //     commitmentId: newTask.commitmentId,
+      //     taskName: newTask.taskName,
+      //   },
+      //   (result) => {
+      //     console.log(result);
+      //     dispatch({
+      //       type: TASK_EDIT_TASK,
+      //       newTask: newTask,
+      //     });
+      //   }
+      // );
+    }
   }
 
   // Ging Prep for Algo
@@ -338,17 +368,17 @@ export const addTaskAction = (newTask) => async (dispatch) => {
         newTask.commitmentId
       ].colorScheme;
 
-    await api.addTask(
-      newTask,
-      (result) => {
-        console.log(result)
-        dispatch({
-          type: TASK_ADD_TASK,
-          newTask: newTask,
-        });
-      },
-      (e) => console.log(e)
-    );
+    // await api.addTask(
+    //   newTask,
+    //   (result) => {
+    //     console.log(result)
+    //     dispatch({
+    //       type: TASK_ADD_TASK,
+    //       newTask: newTask,
+    //     });
+    //   },
+    //   (e) => console.log(e)
+    // );
   }
 };
 
