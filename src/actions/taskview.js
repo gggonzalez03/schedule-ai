@@ -9,7 +9,8 @@ export const TASK_ADD_TASK_PREPARE = "TASK_ADD_TASK_PREPARE";
 export const TASK_ADD_TASK = "TASK_ADD_TASK";
 export const TASK_FORM_EDIT_COMMITMENT = "TASK_FORM_EDIT_COMMITMENT";
 export const TASK_FORM_EDIT_TASK_NAME = "TASK_FORM_EDIT_TASK_NAME";
-export const TASK_FORM_EDIT_DUE_DATE_TIME = "TASK_FORM_EDIT_DUE_DATE_TIME";
+export const TASK_FORM_EDIT_DUE_DATE = "TASK_FORM_EDIT_DUE_DATE";
+export const TASK_FORM_EDIT_DUE_TIME = "TASK_FORM_EDIT_DUE_TIME";
 export const TASK_FORM_EDIT_ECT = "TASK_FORM_EDIT_ECT";
 export const TASK_FORM_SHOW = "TASK_FORM_SHOW";
 export const TASK_FORM_HIDE = "TASK_FORM_HIDE";
@@ -85,10 +86,16 @@ const dateTimeToRaw = (dateTimeFormatted) => {
 
 const jsDateToRaw = (jsDate) => {
   let dd = String(jsDate.getDate()).padStart(2, "0");
-  let mm = String(jsDate.getMonth() + 1).padStart(2, "0");
+  let mm = String(jsDate.getMonth()).padStart(2, "0");
   let yyyy = String(jsDate.getFullYear());
+  let hh = String(jsDate.getHours()).padStart(2, "0");
+  let min = String(jsDate.getMinutes()).padStart(2, "0");
 
-  return yyyy + mm + dd;
+  return yyyy + mm + dd + hh + min;
+};
+
+const jsDateToDBDate = (jsDate) => {
+  return fromRawToDb(jsDateToRaw(jsDate));
 };
 
 const convertRawToJSDate = (dateTimeRaw) => {
@@ -159,7 +166,21 @@ export const fetchTasksAction = (username) => async (dispatch) => {
 
       // Format and add necessary data
       result.forEach((task) => {
-        task.dueDateTime = fromDbDateTORaw(task.dueDateTime);
+        let dueDateTimeRaw = fromDbDateTORaw(task.dueDateTime);
+        let dueDateJS = convertRawToJSDate(dueDateTimeRaw);
+
+        let hour =
+          dueDateJS.getHours() < 10
+            ? "0" + dueDateJS.getHours()
+            : dueDateJS.getHours();
+        let minute =
+          dueDateJS.getMinutes() < 10
+            ? "0" + dueDateJS.getMinutes()
+            : dueDateJS.getMinutes();
+
+        task.dueDateTime = dueDateTimeRaw;
+        task.dueDate = dueDateJS.toDateString();
+        task.dueTime = hour + ":" + minute;
         task.scheduleDateTime = fromDbDateTORaw(task.scheduleDateTime);
         task.estimatedTimeOfCompletion = task.estTimeOfCompletion;
         task.commitmentName =
@@ -267,7 +288,7 @@ export const addTaskPrepareAction = (commitmentName) => (dispatch) => {
   });
 };
 
-export const addTaskAction = (newTask) => (dispatch) => {
+export const addTaskAction = (newTask) => async (dispatch) => {
   if (newTask.taskId == undefined) {
     console.log("New task should be added");
     /**
@@ -285,8 +306,8 @@ export const addTaskAction = (newTask) => (dispatch) => {
      * taskIndex is the index within an allPendingTasks object the task should be in
      */
 
-    console.log(store.getState().taskview.allPendingTasks);
-    console.log(newTask);
+    // console.log(store.getState().taskview.allPendingTasks);
+    // console.log(newTask);
   } else {
     console.log("The task should only be edited");
     console.log("Task ID is: ", newTask.taskId);
@@ -294,12 +315,17 @@ export const addTaskAction = (newTask) => (dispatch) => {
     console.log("Task Index is: ", newTask.taskIndex);
   }
 
+  // Ging Prep for Algo
   if (newTask.taskId == undefined) {
     // Generate scheduleDateTime using the algo
+    console.log("NEW: ", newTask);
 
     // Required for creating task on the backend
     newTask["status"] = "pending";
-    newTask["scheduleDateTime"] = "2021-12-01 14:00:00";
+    newTask["scheduleDateTime"] = fromRawToDb("202111011400");
+    newTask["dueDateTime"] = jsDateToDBDate(
+      new Date(newTask.dueDate + " " + newTask.dueTime + ":00")
+    );
 
     // Extras for the UI
     newTask["taskId"] = "From API result";
@@ -307,26 +333,23 @@ export const addTaskAction = (newTask) => (dispatch) => {
     // newTask["taskIndex"] = 1;
     newTask["time"] = "14:00-16:00";
     newTask["dueInXDays"] = 5;
-    newTask["colorScheme"] = store.getState().taskview.allCommitments[newTask.commitmentId].colorScheme;
+    newTask["colorScheme"] =
+      store.getState().taskview.allCommitments[
+        newTask.commitmentId
+      ].colorScheme;
 
-    console.log(newTask);
+    await api.addTask(
+      newTask,
+      (result) => {
+        console.log(result)
+        dispatch({
+          type: TASK_ADD_TASK,
+          newTask: newTask,
+        });
+      },
+      (e) => console.log(e)
+    );
   }
-
-  // Fill in dummy info for now, this has to be done after API call
-  // newTask["taskName"] = newTask.taskName;
-  // (newTask["selectedCommitmentIndex"] = newTask.selectedCommitmentIndex),
-  //   (newTask["commitmentName"] = newTask.commitmentName);
-  // newTask["time"] = "3:00PM-4:30PM";
-  // newTask["estimatedTimeOfCompletion"] = newTask.estimatedTimeOfCompletion;
-
-  // newTask["dueInXDays"] = 5;
-  // newTask["scheduledInXDays"] = 1;
-  // newTask["colorScheme"] = "#8FF1AD";
-
-  dispatch({
-    type: TASK_ADD_TASK,
-    newTask: newTask,
-  });
 };
 
 export const commitmentFormEditCommitmentAction =
@@ -378,8 +401,12 @@ export const taskFormEditTaskNameAction = (formInput) => (dispatch) => {
   dispatch({ type: TASK_FORM_EDIT_TASK_NAME, taskName: formInput });
 };
 
-export const taskFormEditDueDateTimeAction = (formInput) => (dispatch) => {
-  dispatch({ type: TASK_FORM_EDIT_DUE_DATE_TIME, dueDateTime: formInput });
+export const taskFormEditDueDateAction = (formInput) => (dispatch) => {
+  dispatch({ type: TASK_FORM_EDIT_DUE_DATE, dueDate: formInput });
+};
+
+export const taskFormEditDueTimeAction = (formInput) => (dispatch) => {
+  dispatch({ type: TASK_FORM_EDIT_DUE_TIME, dueTime: formInput });
 };
 
 export const taskFormEditECTAction = (formInput) => (dispatch) => {

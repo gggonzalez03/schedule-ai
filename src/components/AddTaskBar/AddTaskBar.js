@@ -25,7 +25,8 @@ class AddTaskBar extends Component {
             taskName: "",
             commitmentId: defaultCommitmentId,
             commitmentName: defaultCommitmentname,
-            dueDateTime: "",
+            dueDate: new Date().toDateString(),
+            dueTime: "00:00",
             estimatedTimeOfCompletion: "",
           });
         }}

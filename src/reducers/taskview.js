@@ -8,7 +8,7 @@ import {
   TASK_ADD_TASK,
   TASK_FORM_EDIT_COMMITMENT,
   TASK_FORM_EDIT_TASK_NAME,
-  TASK_FORM_EDIT_DUE_DATE_TIME,
+  TASK_FORM_EDIT_DUE_DATE,
   TASK_FORM_EDIT_ECT,
   TASK_FORM_SHOW,
   TASK_FORM_HIDE,
@@ -17,6 +17,7 @@ import {
   COMMITMENT_FORM_SHOW,
   COMMITMENT_FORM_HIDE,
   TASK_CLOSE_TASK,
+  TASK_FORM_EDIT_DUE_TIME,
 } from "../actions/taskview";
 
 // export const addTaskAction = () => async (dispatch) => {
@@ -71,10 +72,17 @@ export default function taskview(state = store.taskview, action) {
         action.newTask,
       ];
 
+      let allCommitmentsClone = JSON.parse(
+        JSON.stringify(state.allCommitments)
+      );
+
+      allCommitmentsClone[action.newTask.commitmentId].taskCount++;
+
       return {
         ...state,
         allPendingTasks: [...state.allPendingTasks],
-        taskEditFormVisible: true,
+        taskEditFormVisible: false,
+        allCommitments: { ...allCommitmentsClone },
       };
     case TASK_FORM_EDIT_COMMITMENT:
       return {
@@ -93,12 +101,20 @@ export default function taskview(state = store.taskview, action) {
           taskName: action.taskName,
         },
       };
-    case TASK_FORM_EDIT_DUE_DATE_TIME:
+    case TASK_FORM_EDIT_DUE_DATE:
       return {
         ...state,
         taskEditContent: {
           ...state.taskEditContent,
-          dueDateTime: action.dueDateTime,
+          dueDate: action.dueDate,
+        },
+      };
+    case TASK_FORM_EDIT_DUE_TIME:
+      return {
+        ...state,
+        taskEditContent: {
+          ...state.taskEditContent,
+          dueTime: action.dueTime,
         },
       };
     case TASK_FORM_EDIT_ECT:
@@ -122,7 +138,8 @@ export default function taskview(state = store.taskview, action) {
           taskName: action.taskName,
           commitmentId: action.commitmentId,
           commitmentName: action.commitmentName,
-          dueDateTime: action.dueDateTime,
+          dueDate: action.dueDate,
+          dueTime: action.dueTime,
           estimatedTimeOfCompletion: action.estimatedTimeOfCompletion,
         },
       };
@@ -174,11 +191,14 @@ export default function taskview(state = store.taskview, action) {
       //   action.taskIndex
       // );
 
-      let allPendingTasksClone = JSON.parse(JSON.stringify(state.allPendingTasks))
+      let allPendingTasksClone = JSON.parse(
+        JSON.stringify(state.allPendingTasks)
+      );
 
-      allPendingTasksClone[
-        action.taskSectionId
-      ].tasks.splice(action.taskIndex, 1);
+      allPendingTasksClone[action.taskSectionId].tasks.splice(
+        action.taskIndex,
+        1
+      );
 
       return {
         ...state,

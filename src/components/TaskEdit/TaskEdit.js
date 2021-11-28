@@ -4,7 +4,8 @@ import {
   addTaskAction,
   taskFormEditCommitmentAction,
   taskFormEditTaskNameAction,
-  taskFormEditDueDateTimeAction,
+  taskFormEditDueDateAction,
+  taskFormEditDueTimeAction,
   taskFormEditECTAction,
   taskEditFormHideAction,
 } from "../../actions/taskview";
@@ -19,7 +20,8 @@ class TaskEdit extends Component {
       taskName,
       commitmentId,
       commitmentName,
-      dueDateTime,
+      dueDate,
+      dueTime,
       estimatedTimeOfCompletion,
       allCommitments,
       taskEditFormHide,
@@ -27,6 +29,20 @@ class TaskEdit extends Component {
       taskSectionId,
       taskIndex,
     } = this.props;
+
+    let today = new Date();
+    let dueDateOptions = new Array(7).fill().map((_, i) => {
+      let dateString = today.toDateString();
+      today.setDate(today.getDate() + 1);
+      return dateString;
+    });
+
+    let hour = 0;
+    let dueTimeOptions = new Array(24).fill().map((_, i) => {
+      let hourString = hour < 10 ? "0" + hour + ":00" : hour + ":00";
+      hour = hour + 1;
+      return hourString;
+    });
 
     return (
       <div
@@ -70,7 +86,7 @@ class TaskEdit extends Component {
             <h4 className="taskedit_input_label">
               Due Date and Time (mm/dd/yyyy, hh:mm)
             </h4>
-            <input
+            {/* <input
               className="taskedit_input"
               type="text"
               placeholder="mm/dd/yyyy, hh:mm"
@@ -78,7 +94,43 @@ class TaskEdit extends Component {
               onChange={(e) => {
                 this.props.taskFormEditDueDateTime(e.target.value);
               }}
-            ></input>
+            ></input> */}
+            <div id="taskedit_date_time_select">
+              <select
+                id="taskedit_date_select"
+                className="taskedit_input"
+                value={dueDate == null ? 0 : dueDate}
+                onChange={(e) => {
+                  this.props.taskFormEditDueDate(e.target.value);
+                }}
+              >
+                {dueDateOptions &&
+                  dueDateOptions.map((duedate, index) => {
+                    return (
+                      <option key={"duedate" + duedate} value={duedate}>
+                        {duedate}
+                      </option>
+                    );
+                  })}
+              </select>
+              <select
+                id="taskedit_time_select"
+                className="taskedit_input"
+                value={dueTime == null ? 0 : dueTime}
+                onChange={(e) => {
+                  this.props.taskFormEditDueTime(e.target.value);
+                }}
+              >
+                {dueTimeOptions &&
+                  dueTimeOptions.map((duetime, index) => {
+                    return (
+                      <option key={"duetime" + duetime} value={duetime}>
+                        {duetime}
+                      </option>
+                    );
+                  })}
+              </select>
+            </div>
             <h4 className="taskedit_input_label">
               Estimated Completion Time in Hours
             </h4>
@@ -111,7 +163,8 @@ class TaskEdit extends Component {
                     taskName,
                     commitmentId,
                     commitmentName,
-                    dueDateTime,
+                    dueDate,
+                    dueTime,
                     estimatedTimeOfCompletion,
                   });
                 }}
@@ -142,7 +195,8 @@ const mapStateToProps = ({ taskview }) => {
     taskName: taskview.taskEditContent.taskName,
     estimatedTimeOfCompletion:
       taskview.taskEditContent.estimatedTimeOfCompletion,
-    dueDateTime: taskview.taskEditContent.dueDateTime,
+    dueDate: taskview.taskEditContent.dueDate,
+    dueTime: taskview.taskEditContent.dueTime,
   };
 };
 
@@ -150,7 +204,8 @@ const mapDispatchToProps = {
   addTask: addTaskAction,
   taskFormEditCommitment: taskFormEditCommitmentAction,
   taskFormEditTaskName: taskFormEditTaskNameAction,
-  taskFormEditDueDateTime: taskFormEditDueDateTimeAction,
+  taskFormEditDueDate: taskFormEditDueDateAction,
+  taskFormEditDueTime: taskFormEditDueTimeAction,
   taskFormEditECT: taskFormEditECTAction,
   taskEditFormHide: taskEditFormHideAction,
 };
