@@ -34,6 +34,7 @@ export default function taskview(state = store.taskview, action) {
     case TASK_FETCH_TASKS:
       return {
         ...state,
+        allPendingTasksRaw: action.allPendingTasksRaw,
         allPendingTasks: action.allPendingTasks,
         allPendingTasksCount: action.allPendingTasksCount,
         dashboard: {

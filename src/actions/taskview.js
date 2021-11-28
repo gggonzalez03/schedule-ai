@@ -259,9 +259,11 @@ export const fetchTasksAction = (username) => async (dispatch) => {
       });
 
       // console.log(pendingTasksGroupedByScheduleDate);
+      // console.log(result);
 
       dispatch({
         type: TASK_FETCH_TASKS,
+        allPendingTasksRaw: result,
         allPendingTasks: pendingTasksGroupedByScheduleDate,
         allPendingTasksCount: result.allPendingTasksCount,
         dueThisWeekCount: dueThisWeekCount,
@@ -307,32 +309,36 @@ export const addTaskAction = (newTask) => async (dispatch) => {
      * taskIndex is the index within an allPendingTasks object the task should be in
      */
 
-    var current_dates_timestamp = [];
+    console.log(store.getState().taskview.allPendingTasks)
+    console.log(store.getState().taskview.allPendingTasksRaw)
 
-    var target_due_time = newTask.dueDateTime;
-    var target_length = newTask.estimatedTimeOfCompletion;
-    var target_due_time_timestamp = new Date(newTask.dueDateTime).getTime();
+    // var current_dates_timestamp = [];
 
-    store.getState().taskview.allPendingTasks.forEach((element) => {
-      current_dates_timestamp.push(new Date(element.date).getTime());
-    });
+    // var target_due_time = newTask.dueDateTime;
+    // var target_length = newTask.estimatedTimeOfCompletion;
+    // var target_due_time_timestamp = new Date(newTask.dueDateTime).getTime();
 
-    // Sort the dates array
-    current_dates_timestamp.sort();
+    // store.getState().taskview.allPendingTasks.forEach((element) => {
+    //   current_dates_timestamp.push(new Date(element.date).getTime());
+    // });
 
-    console.log(target_due_time_timestamp);
-    console.log(current_dates_timestamp);
+    // // Sort the dates array
+    // current_dates_timestamp.sort();
 
-    var target_idx = 0;
+    // console.log(target_due_time_timestamp);
+    // console.log(current_dates_timestamp);
 
-    while (
-      (target_idx < current_dates_timestamp.length) &
-      (target_due_time_timestamp > current_dates_timestamp[target_idx])
-    ) {
-      target_idx++;
-    }
+    // var target_idx = 0;
 
-    console.log(target_idx);
+    // while (
+    //   (target_idx < current_dates_timestamp.length) &
+    //   (target_due_time_timestamp > current_dates_timestamp[target_idx])
+    // ) {
+    //   target_idx++;
+    // }
+
+    // console.log(target_idx);
+
   } else {
     console.log("The task should only be edited");
     console.log("Task ID is: ", newTask.taskId);
@@ -370,7 +376,7 @@ export const addTaskAction = (newTask) => async (dispatch) => {
   }
 
   // Ging Prep for Algo
-  if (newTask.taskId == undefined) {
+  if (newTask.taskId == undefined && false) {
     // Generate scheduleDateTime using the algo
     console.log("NEW: ", newTask);
 
