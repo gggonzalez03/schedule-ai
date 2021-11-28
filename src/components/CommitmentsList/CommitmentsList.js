@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { commitmentFormShowAction } from "../../actions/taskview";
 import CommitmentItem from "./CommitmentItem/CommitmentItem";
 
 import "./CommitmentsList.css";
@@ -13,7 +14,7 @@ class CommitmentsList extends Component {
       <div id="commitmentslist-main">
         <div id="commitmentslist-header">
           <h4>Commitments</h4>
-          <img id="list-select-plus-icon" src={require("./img/plus.png")} />
+          <img id="list-select-plus-icon" src={require("./img/plus.png")} onClick={this.props.commitmentFormShow}/>
         </div>
         <div id="commitmentslist-aggregate">
           <CommitmentItem
@@ -50,6 +51,7 @@ const mapStateToProps = ({ taskview }) => {
 };
 
 const mapDispatchToProps = {
+  commitmentFormShow: commitmentFormShowAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommitmentsList);

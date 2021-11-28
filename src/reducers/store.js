@@ -18,7 +18,11 @@ const store = {
       startDateTime: null,
       endDateTime: null,
     },
+    commitmentEditContent: {
+      commitmentName: null,
+    },
     taskEditFormVisible: false,
+    commitmentEditFormVisible: false,
   },
 };
 

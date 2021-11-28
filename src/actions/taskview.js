@@ -13,6 +13,11 @@ export const TASK_FORM_EDIT_DUE_DATE_TIME = "TASK_FORM_EDIT_DUE_DATE_TIME";
 export const TASK_FORM_EDIT_ECT = "TASK_FORM_EDIT_ECT";
 export const TASK_FORM_SHOW = "TASK_FORM_SHOW";
 export const TASK_FORM_HIDE = "TASK_FORM_HIDE";
+export const COMMITMENT_FORM_EDIT_COMMITMENT =
+  "COMMITMENT_FORM_EDIT_COMMITMENT";
+export const COMMITMENT_FORM_SUBMIT = "COMMITMENT_FORM_SUBMIT";
+export const COMMITMENT_FORM_SHOW = "COMMITMENT_FORM_SHOW";
+export const COMMITMENT_FORM_HIDE = "COMMITMENT_FORM_HIDE";
 
 const fromDbDateTORaw = (dbToRaw) => {
   if (dbToRaw != null) {
@@ -244,26 +249,7 @@ export const fetchTasksAction = (username) => async (dispatch) => {
   );
 };
 
-export const selectCommitmentAction = (index) => async (dispatch) => {
-  await api.login(
-    {
-      username: "username_vish_7",
-      password: "password1",
-      repeatPassword: "password",
-    },
-    (res) => {
-      console.log(res);
-    },
-    (e) => {
-      console.log(e);
-    }
-  );
-
-  dispatch({
-    type: TASK_SELECT_COMMITMENT,
-    selectedCommitment: index,
-  });
-};
+export const selectCommitmentAction = (index) => async (dispatch) => {};
 
 export const selectTaskAction = (task) => (dispatch) => {
   dispatch({
@@ -289,9 +275,9 @@ export const addTaskAction = (newTask) => (dispatch) => {
      * Useful Data
      * console.log(store.getState().taskview.allPendingTasks);
      * console.log(newTask);
-     * 
+     *
      * Notes:
-     * 
+     *
      * taskId is the unique ID of the task, but we generate this at the backend
      * taskSectionId is the index in allPendingTasks the task should be in
      * taskIndex is the index within an allPendingTasks object the task should be in
@@ -299,7 +285,6 @@ export const addTaskAction = (newTask) => (dispatch) => {
 
     console.log(store.getState().taskview.allPendingTasks);
     console.log(newTask);
-    
   } else {
     console.log("The task should only be edited");
     console.log("Task ID is: ", newTask.taskId);
@@ -322,6 +307,43 @@ export const addTaskAction = (newTask) => (dispatch) => {
   //   type: TASK_ADD_TASK,
   //   newTask: newTask,
   // });
+};
+
+export const commitmentFormEditCommitmentAction =
+  (commitmentName) => (dispatch) => {
+    dispatch({
+      type: COMMITMENT_FORM_EDIT_COMMITMENT,
+      commitmentName: commitmentName,
+    });
+  };
+
+export const commitmentFormSubmitAction = (formInput) => async (dispatch) => {
+  await api.addCommitment(
+    formInput,
+    (result) => {
+      console.log(result);
+      dispatch({
+        type: COMMITMENT_FORM_SUBMIT,
+        commitmentName: result.commitmentName,
+        commitmentId: result.commitmentId,
+        colorScheme: result.colorScheme,
+      });
+    },
+    (e) => console.log(e)
+  );
+};
+
+export const commitmentFormShowAction = (taskData) => (dispatch) => {
+  dispatch({
+    type: COMMITMENT_FORM_SHOW,
+    commitmentName: "",
+  });
+};
+
+export const commitmentFormHideAction = () => (dispatch) => {
+  dispatch({
+    type: COMMITMENT_FORM_HIDE,
+  });
 };
 
 export const taskFormEditCommitmentAction = (formInput) => (dispatch) => {

@@ -11,6 +11,7 @@ import CommitmentsList from "../../components/CommitmentsList/CommitmentsList";
 import DashboardBar from "../../components/DashboardBar/DashboardBar";
 import TaskEdit from "../../components/TaskEdit/TaskEdit";
 import TaskList from "../../components/TaskList/TaskList";
+import CommitmentEdit from "../../components/CommitmentEdit/CommitmentEdit";
 
 import "./TaskDashboard.css";
 
@@ -47,6 +48,7 @@ class TaskDashboard extends Component {
         <div id="taskdashboard-right-column">
           <div id="taskdashboard_taskedit_section">
             <TaskEdit></TaskEdit>
+            <CommitmentEdit></CommitmentEdit>
           </div>
         </div>
       </div>

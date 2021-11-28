@@ -111,8 +111,11 @@ class TaskEdit extends Component {
                     estimatedTimeOfCompletion,
                   });
                 }}
+                style={{ backgroundColor: "#8FF1AD" }}
               >
-                <h4 id="taskedit_save_button_text">Save</h4>
+                <h4 id="taskedit_save_button_text" style={{ color: "#222222" }}>
+                  Save
+                </h4>
               </div>
             </div>
           </div>

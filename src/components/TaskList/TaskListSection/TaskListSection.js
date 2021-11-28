@@ -20,10 +20,10 @@ class TaskListSection extends Component {
             {tasks.length == 0 ? <div style={{ fontSize: "0.8em", fontWeight: "300" }}>No Tasks</div>: ""}
           </div>
           <div className="tasklistsection-right">
-            <img
+            {/* <img
               className="tasklistsection-plus"
               src={require("./img/plus.png")}
-            />
+            /> */}
           </div>
         </div>
         <div className="tasklistsection-tasks">

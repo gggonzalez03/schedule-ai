@@ -12,6 +12,10 @@ import {
   TASK_FORM_EDIT_ECT,
   TASK_FORM_SHOW,
   TASK_FORM_HIDE,
+  COMMITMENT_FORM_EDIT_COMMITMENT,
+  COMMITMENT_FORM_SUBMIT,
+  COMMITMENT_FORM_SHOW,
+  COMMITMENT_FORM_HIDE,
 } from "../actions/taskview";
 
 // export const addTaskAction = () => async (dispatch) => {
@@ -69,6 +73,7 @@ export default function taskview(state = store.taskview, action) {
       return {
         ...state,
         allPendingTasks: [...state.allPendingTasks],
+        taskEditFormVisible: true,
       };
     case TASK_FORM_EDIT_COMMITMENT:
       return {
@@ -107,6 +112,7 @@ export default function taskview(state = store.taskview, action) {
       return {
         ...state,
         taskEditFormVisible: true,
+        commitmentEditFormVisible: false,
         taskEditContent: {
           ...state.taskEditContent,
           taskId: action.taskId,
@@ -123,6 +129,42 @@ export default function taskview(state = store.taskview, action) {
       return {
         ...state,
         taskEditFormVisible: false,
+      };
+
+    case COMMITMENT_FORM_EDIT_COMMITMENT:
+      return {
+        ...state,
+        commitmentEditContent: {
+          commitmentName: action.commitmentName,
+        }
+      };
+    case COMMITMENT_FORM_SUBMIT:
+      return {
+        ...state,
+        allCommitments: {
+          ...state.allCommitments,
+          [action.commitmentId]: {
+            commitmentName: action.commitmentName,
+            commitmentId: action.commitmentId,
+            colorScheme: action.colorScheme,
+            taskCount: 0,
+          },
+        },
+        commitmentEditFormVisible: false,
+      };
+    case COMMITMENT_FORM_SHOW:
+      return {
+        ...state,
+        commitmentEditFormVisible: true,
+        taskEditFormVisible: false,
+        commitmentEditContent: {
+          commitmentName: action.commitmentName,
+        }
+      };
+    case COMMITMENT_FORM_HIDE:
+      return {
+        ...state,
+        commitmentEditFormVisible: false,
       };
     default:
       return state;

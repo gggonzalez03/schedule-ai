@@ -49,6 +49,10 @@ export const fetchTasks = (username, onSuccess, onError) => {
   sendXHRRequest("POST", "fetchPendingTasks", username, onSuccess, onError);
 };
 
+export const addCommitment = (commitmentData, onSuccess, onError) => {
+  sendXHRRequest("POST", "addCommitment", commitmentData, onSuccess, onError);
+};
+
 let count = 0;
 export const incrementCount = () => {
   return new Promise((resolve) =>
