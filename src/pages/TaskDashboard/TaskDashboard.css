@@ -33,3 +33,9 @@
 #taskdashboard_taskedit_section {
   margin-top: 9em;
 }
+
+#taskdashboard-today {
+  margin-top: 3em;
+  color: #A8A8A8;
+  font-weight: 300;
+}

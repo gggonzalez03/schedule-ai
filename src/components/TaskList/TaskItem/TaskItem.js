@@ -15,6 +15,7 @@ class TaskItem extends Component {
       <div
         className="taskitem-main"
         onClick={() => {
+          console.log(task)
           taskEditFormShow({
             ...task,
             taskSectionId: taskSectionId,
@@ -25,7 +26,7 @@ class TaskItem extends Component {
         <div className="taskitem-left">
           <div
             className="taskitem-hollow-dot"
-            style={{ borderColor: task.colorScheme }}
+            style={{ borderColor: task.colorScheme, cursor: "pointer" }}
             onClick={(event) => {
               event.stopPropagation();
               closeTask({
@@ -34,7 +35,6 @@ class TaskItem extends Component {
                 taskIndex: taskIndex,
               });
             }}
-            style={{ cursor: "pointer" }}
           ></div>
           <div className="taskitem-details">
             <div className="taskitem-first-line">

@@ -13,7 +13,8 @@ const store = {
     taskEditContent: {
       taskName: null,
       commitmentName: null,
-      dueDateTime: null,
+      dueDate: new Date().toDateString(),
+      dueTime: "00:00",
       estimatedTimeOfCompletion: null,
       startDateTime: null,
       endDateTime: null,
