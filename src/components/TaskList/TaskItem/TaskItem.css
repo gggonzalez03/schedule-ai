@@ -24,8 +24,8 @@
   color: #a8a8a8;
 }
 .taskitem-hollow-dot {
-  height: 0.5em;
-  width: 0.5em;
+  height: 1em;
+  width: 1em;
   border-radius: 50%;
   border: 1px solid #a8a8a8;
   margin-top: 0.25em;

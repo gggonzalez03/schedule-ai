@@ -53,6 +53,11 @@ export const addCommitment = (commitmentData, onSuccess, onError) => {
   sendXHRRequest("POST", "addCommitment", commitmentData, onSuccess, onError);
 };
 
+export const closeTask = (taskId, onSuccess, onError) => {
+  sendXHRRequest("POST", "closeTask", taskId, onSuccess, onError);
+};
+
+
 let count = 0;
 export const incrementCount = () => {
   return new Promise((resolve) =>

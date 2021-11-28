@@ -18,6 +18,7 @@ export const COMMITMENT_FORM_EDIT_COMMITMENT =
 export const COMMITMENT_FORM_SUBMIT = "COMMITMENT_FORM_SUBMIT";
 export const COMMITMENT_FORM_SHOW = "COMMITMENT_FORM_SHOW";
 export const COMMITMENT_FORM_HIDE = "COMMITMENT_FORM_HIDE";
+export const TASK_CLOSE_TASK = "TASK_CLOSE_TASK";
 
 const fromDbDateTORaw = (dbToRaw) => {
   if (dbToRaw != null) {
@@ -377,4 +378,19 @@ export const taskEditFormHideAction = () => (dispatch) => {
   dispatch({
     type: TASK_FORM_HIDE,
   });
+};
+
+export const closeTaskAction = (task) => async (dispatch) => {
+  await api.closeTask(
+    { taskId: task.taskId },
+    (result) => {
+      if (result.success) {
+        dispatch({
+          type: TASK_CLOSE_TASK,
+          ...task,
+        });
+      }
+    },
+    (e) => console.log(e)
+  );
 };

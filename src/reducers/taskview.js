@@ -16,6 +16,7 @@ import {
   COMMITMENT_FORM_SUBMIT,
   COMMITMENT_FORM_SHOW,
   COMMITMENT_FORM_HIDE,
+  TASK_CLOSE_TASK,
 } from "../actions/taskview";
 
 // export const addTaskAction = () => async (dispatch) => {
@@ -136,7 +137,7 @@ export default function taskview(state = store.taskview, action) {
         ...state,
         commitmentEditContent: {
           commitmentName: action.commitmentName,
-        }
+        },
       };
     case COMMITMENT_FORM_SUBMIT:
       return {
@@ -159,13 +160,31 @@ export default function taskview(state = store.taskview, action) {
         taskEditFormVisible: false,
         commitmentEditContent: {
           commitmentName: action.commitmentName,
-        }
+        },
       };
     case COMMITMENT_FORM_HIDE:
       return {
         ...state,
         commitmentEditFormVisible: false,
       };
+    case TASK_CLOSE_TASK:
+      // console.log(
+      //   state.allPendingTasks,
+      //   action.taskSectionId,
+      //   action.taskIndex
+      // );
+
+      let allPendingTasksClone = JSON.parse(JSON.stringify(state.allPendingTasks))
+
+      allPendingTasksClone[
+        action.taskSectionId
+      ].tasks.splice(action.taskIndex, 1);
+
+      return {
+        ...state,
+        allPendingTasks: [...allPendingTasksClone],
+      };
+
     default:
       return state;
   }

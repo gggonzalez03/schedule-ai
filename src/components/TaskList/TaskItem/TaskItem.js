@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { taskEditFormShowAction } from "../../../actions/taskview";
+import {
+  taskEditFormShowAction,
+  closeTaskAction,
+} from "../../../actions/taskview";
 
 import "./TaskItem.css";
 
 class TaskItem extends Component {
   render() {
     const { task, taskSectionId, taskIndex } = this.props;
-    const { taskEditFormShow } = this.props;
+    const { taskEditFormShow, closeTask } = this.props;
     return (
       <div
         className="taskitem-main"
@@ -23,6 +26,15 @@ class TaskItem extends Component {
           <div
             className="taskitem-hollow-dot"
             style={{ borderColor: task.colorScheme }}
+            onClick={(event) => {
+              event.stopPropagation();
+              closeTask({
+                ...task,
+                taskSectionId: taskSectionId,
+                taskIndex: taskIndex,
+              });
+            }}
+            style={{ cursor: "pointer" }}
           ></div>
           <div className="taskitem-details">
             <div className="taskitem-first-line">
@@ -56,6 +68,7 @@ const mapStateToProps = ({ taskview }) => {
 
 const mapDispatchToProps = {
   taskEditFormShow: taskEditFormShowAction,
+  closeTask: closeTaskAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskItem);
