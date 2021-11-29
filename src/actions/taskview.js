@@ -136,8 +136,12 @@ export const fetchCommitmentsAction = (username) => async (dispatch) => {
 };
 
 export const getDiffInDays = (start, end) => {
+
+  let startD = new Date(start.toDateString())
+  let endD = new Date(end.toDateString())
+
   var one_day = 1000 * 60 * 60 * 24;
-  return Math.round((end.getTime() - start.getTime()) / one_day);
+  return parseInt((Math.abs(endD.getTime() - startD.getTime()) / one_day));
 };
 
 export const fetchTasksAction = (username) => async (dispatch) => {
