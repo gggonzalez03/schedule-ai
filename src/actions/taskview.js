@@ -144,7 +144,26 @@ export const fetchTasksAction = (username) => async (dispatch) => {
   await api.fetchTasks(
     { username: username },
     (result) => {
-      if (result == null || result == undefined || result.length <= 0) return;
+      if (result == null || result == undefined || result.length <= 0) {
+        let today = new Date();
+        let pendingTasksGroupedByScheduleDate = new Array(7)
+        .fill()
+        .map((_, i) => {
+          let dateString = today.toDateString();
+          today.setDate(today.getDate() + 1);
+          return {
+            date: dateString,
+            tasks: [],
+          };
+        });
+
+        dispatch({
+          type: TASK_FETCH_TASKS,
+          allPendingTasks: pendingTasksGroupedByScheduleDate,
+        });
+
+        return;
+      };
 
       let current_day = new Date();
       let dueTodayCount = 0;
@@ -206,9 +225,8 @@ export const fetchTasksAction = (username) => async (dispatch) => {
 
       // let firstTaskDay = convertRawToJSDate(pendingTasks[0].scheduleDateTime);
       let firstTaskDay = current_day;
-      let lastTaskDay = convertRawToJSDate(
-        pendingTasks[pendingTasks.length - 1].scheduleDateTime
-      );
+      let lastTaskDay = new Date();
+      lastTaskDay.setDate(lastTaskDay.getDate() + 6);
 
       let daysCount = getDiffInDays(firstTaskDay, lastTaskDay);
       let firstTaskDayCopy = new Date(firstTaskDay.getTime());
@@ -263,6 +281,8 @@ export const fetchTasksAction = (username) => async (dispatch) => {
 
       // console.log(pendingTasksGroupedByScheduleDate);
       // console.log(result);
+
+      console.log("Res:", pendingTasksGroupedByScheduleDate);
 
       dispatch({
         type: TASK_FETCH_TASKS,
