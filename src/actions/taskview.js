@@ -289,8 +289,11 @@ export const addTaskAction = (newTask) => (dispatch) => {
     var target_due_time = newTask.dueDateTime
     var target_length = newTask.estimatedTimeOfCompletion
     var target_due_date = target_due_time.substring(0, target_due_time.indexOf(','));
-    var target_due_time = target_due_time.substring(target_due_time.indexOf(',') + 1);
+    var target_due_time = target_due_time.substring(target_due_time.indexOf(',') + 1).replace(/ /g,'');
     var target_due_time_timestamp = (new Date(target_due_date)).getTime();
+
+    var target_due_time_stamp = (new Date('1/1/2021' + ' ' + target_due_time)).getTime();    
+    target_due_time_stamp = target_due_time_stamp - target_length*1000*60*60;
 
     (store.getState().taskview.allPendingTasks).forEach(element => {
       current_dates_timestamp.push((new Date(element.date)).getTime());
@@ -318,13 +321,23 @@ export const addTaskAction = (newTask) => (dispatch) => {
 
   var task_info = store.getState().taskview.allPendingTasks[taskSectionId];
 
-  if (task_info.tasks.length == 0) {
-    taskIndex = 0; 
-  } else {
-    taskIndex = task_info.tasks.length + 1;
-  }
-
   if (result_found) {
+    if (task_info.tasks.length == 0) {
+      taskIndex = 0; 
+    } else {
+      var idx = 0;
+      while(idx < task_info.tasks.length) {
+        var task_time = task_info.tasks[idx].time;
+        var cur_start_time = task_info.tasks[idx].time.substring(0, task_time.indexOf('-'));
+        var cur_start_time_stamp = (new Date('1/1/2021' + ' ' + cur_start_time)).getTime(); 
+
+        if (target_due_time_stamp < cur_start_time_stamp) {
+          break;
+        }
+        idx++;
+      }
+      taskIndex = idx;
+    }
     // Return taskSectionId and taskIndex here.
     console.log("taskSectionId");
     console.log(taskSectionId);
