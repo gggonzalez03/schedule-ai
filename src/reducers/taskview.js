@@ -65,9 +65,6 @@ export default function taskview(state = store.taskview, action) {
         commitmentNameToAddTaskTo: action.commitmentName,
       };
     case TASK_ADD_TASK:
-      // Get input
-      // Run algo
-      // addTaskAction (call API to post to DB)
 
       state.allPendingTasks[action.newTask.taskSectionId].tasks = [
         ...state.allPendingTasks[action.newTask.taskSectionId].tasks,
@@ -188,11 +185,6 @@ export default function taskview(state = store.taskview, action) {
         commitmentEditFormVisible: false,
       };
     case TASK_CLOSE_TASK: {
-      // console.log(
-      //   state.allPendingTasks,
-      //   action.taskSectionId,
-      //   action.taskIndex
-      // );
 
       let allPendingTasksClone = JSON.parse(
         JSON.stringify(state.allPendingTasks)
@@ -206,6 +198,7 @@ export default function taskview(state = store.taskview, action) {
       return {
         ...state,
         allPendingTasks: [...allPendingTasksClone],
+        taskEditFormVisible: false,
       };
     }
     case TASK_EDIT_TASK: {
@@ -224,7 +217,8 @@ export default function taskview(state = store.taskview, action) {
       ].taskName = action.newTask.taskName;
       allPendingTasksClone[action.newTask.taskSectionId].tasks[
         action.newTask.taskIndex
-      ].colorScheme = state.allCommitments[action.newTask.commitmentId].colorScheme;
+      ].colorScheme =
+        state.allCommitments[action.newTask.commitmentId].colorScheme;
 
       return {
         ...state,

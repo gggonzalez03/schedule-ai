@@ -204,7 +204,8 @@ export const fetchTasksAction = (username) => async (dispatch) => {
         return a.scheduleDateTime - b.scheduleDateTime;
       });
 
-      let firstTaskDay = convertRawToJSDate(pendingTasks[0].scheduleDateTime);
+      // let firstTaskDay = convertRawToJSDate(pendingTasks[0].scheduleDateTime);
+      let firstTaskDay = current_day;
       let lastTaskDay = convertRawToJSDate(
         pendingTasks[pendingTasks.length - 1].scheduleDateTime
       );
@@ -232,10 +233,12 @@ export const fetchTasksAction = (username) => async (dispatch) => {
 
         if (task.status == "pending") {
           let daysBeforeDue = getDiffInDays(current_day, dueDateTime);
+          daysBeforeDue = daysBeforeDue < 0 ? 0 : daysBeforeDue;
           let daysBeforeStart = getDiffInDays(
             firstTaskDay,
             scheduleDateTimeStart
           );
+          daysBeforeStart = daysBeforeStart < 0 ? 0 : daysBeforeStart;
           task["dueInXDays"] = daysBeforeDue;
           task["time"] = getTimeScheduleString(
             scheduleDateTimeStart,
@@ -293,173 +296,98 @@ export const addTaskPrepareAction = (commitmentName) => (dispatch) => {
 
 export const addTaskAction = (newTask) => async (dispatch) => {
   if (newTask.taskId == undefined) {
-    /**
-     * TODO: Cindy
-     * Run algorithm here
-     *
-     * Useful Data
-     * console.log(store.getState().taskview.allPendingTasks);
-     * console.log(newTask);
-     *
-     * Notes:
-     *
-     * taskId is the unique ID of the task, but we generate this at the backend
-     * taskSectionId is the index in allPendingTasks the task should be in
-     * taskIndex is the index within an allPendingTasks object the task should be in
-     */
-
-    let newTaskDueDate = new Date(newTask.dueDate);
-    newTask.dueDateTime =
-      newTaskDueDate.getMonth() +
-      1 +
-      "/" +
-      newTaskDueDate.getDate() +
-      "/" +
-      newTaskDueDate.getFullYear() +
-      ", " +
-      newTask.dueTime;
-
-    var current_dates_timestamp = [];
-    var target_due_time = newTask.dueDateTime;
-    var target_length = newTask.estimatedTimeOfCompletion;
-    var target_due_date = target_due_time.substring(
-      0,
-      target_due_time.indexOf(",")
+    let current_day = new Date();
+    let allPendingTasksClone = JSON.parse(
+      JSON.stringify(store.getState().taskview.allPendingTasks)
     );
-    var target_due_time = target_due_time
-      .substring(target_due_time.indexOf(",") + 1)
-      .replace(/ /g, "");
-    var target_due_time_timestamp = new Date(target_due_date).getTime();
 
-    var target_due_time_stamp = new Date(
-      "1/1/2021" + " " + target_due_time
-    ).getTime();
-    target_due_time_stamp =
-      target_due_time_stamp - target_length * 1000 * 60 * 60;
-
-    var target_due_time_stamp = new Date(
-      "1/1/2021" + " " + target_due_time
-    ).getTime();
-    target_due_time_stamp =
-      target_due_time_stamp - target_length * 1000 * 60 * 60;
-
-    store.getState().taskview.allPendingTasks.forEach((element) => {
-      current_dates_timestamp.push(new Date(element.date).getTime());
+    let taskDueDate = new Date(newTask.dueDate);
+    let sections = [];
+    console.log(allPendingTasksClone);
+    Object.keys(allPendingTasksClone).map((key, index) => {
+      let currSection = allPendingTasksClone[key];
+      let currDate = new Date(currSection.date);
+      if (taskDueDate >= currDate) {
+        var currSectionEndTime = 8; // Always start at 8AM
+        var totalETC = currSection.tasks.reduce(
+          (sum, task) => sum + task.estimatedTimeOfCompletion,
+          0
+        );
+        sections.push({
+          taskSectionId: key,
+          scheduleDate: currSection.date,
+          taskCount: currSection.tasks.length,
+          totalETC: totalETC,
+          freeStartTime: parseInt(currSectionEndTime) + parseInt(totalETC),
+        });
+      }
     });
 
-    var target_idx = 0;
-    var taskSectionId = 0;
-    var taskIndex = 0;
-    var result_found = false;
-
-    // Case 1: when the date already existed
-
-    while (target_idx < current_dates_timestamp.length) {
-      if (target_due_time_timestamp == current_dates_timestamp[target_idx]) {
-        result_found = true;
-        break;
+    sections.sort((a, b) => {
+      if (a.totalETC === b.totalETC) {
+        return b.taskSectionId - a.taskSectionId;
       }
-      target_idx++;
+      return b.totalETC > a.totalETC ? 1 : -1;
+    });
+
+    let freeSection = sections.pop();
+    while (freeSection && freeSection.totalETC >= 8) {
+      freeSection = sections.pop();
     }
 
-    taskSectionId = target_idx;
+    console.log(sections, freeSection);
 
-    var task_info = store.getState().taskview.allPendingTasks[taskSectionId];
+    if (freeSection != undefined) {
+      let scheduleDateTime = new Date(freeSection.scheduleDate);
+      let dueDateTimeJS = new Date(
+        newTask.dueDate + " " + newTask.dueTime + ":00"
+      );
+      scheduleDateTime.setHours(freeSection.freeStartTime);
 
-    if (result_found) {
-      if (task_info.tasks.length == 0) {
-        taskIndex = 0;
-      } else {
-        var idx = 0;
-        while (idx < task_info.tasks.length) {
-          var task_time = task_info.tasks[idx].time;
-          var cur_start_time = task_info.tasks[idx].time.substring(
-            0,
-            task_time.indexOf("-")
-          );
-          var cur_start_time_stamp = new Date(
-            "1/1/2021" + " " + cur_start_time
-          ).getTime();
+      // choose which has less ETC popped vs duedate
 
-          if (target_due_time_stamp < cur_start_time_stamp) {
-            break;
-          }
-          idx++;
-        }
-        taskIndex = idx;
-      }
-      // Return taskSectionId and taskIndex here.
-      console.log("taskSectionId");
-      console.log(taskSectionId);
-      console.log("taskIndex");
-      console.log(taskIndex);
+      // Required for creating task on the backend
+      newTask["username"] = newTask.username;
+      newTask["commitmentId"] = newTask.commitmentId;
+      newTask["taskName"] = newTask.taskName;
+      newTask["status"] = "pending";
+      newTask["dueDateTime"] = jsDateToDBDate(dueDateTimeJS);
+      newTask["scheduleDateTime"] = jsDateToDBDate(scheduleDateTime);
+      newTask["estimatedTimeOfCompletion"] = newTask.estimatedTimeOfCompletion;
+
+      // Additional data for the UI
+      newTask["taskSectionId"] = freeSection.taskSectionId;
+      newTask["time"] =
+        freeSection.freeStartTime +
+        ":00-" +
+        (parseInt(freeSection.freeStartTime) +
+          parseInt(newTask.estimatedTimeOfCompletion)) +
+        ":00";
+
+      let dueInXDays = getDiffInDays(current_day, dueDateTimeJS);
+      newTask["dueInXDays"] = dueInXDays = dueInXDays < 0 ? 0 : dueInXDays;
+      newTask["colorScheme"] =
+        store.getState().taskview.allCommitments[
+          newTask.commitmentId
+        ].colorScheme;
+
+      await api.addTask(
+        newTask,
+        (result) => {
+          newTask["taskId"] = result.taskId;
+          dispatch({
+            type: TASK_ADD_TASK,
+            newTask: newTask,
+          });
+        },
+        (e) => console.log(e)
+      );
     }
-
-    // Case 2: when the date did not exist
-
-    while (
-      (target_idx < current_dates_timestamp.length) &
-      (target_due_time_timestamp > current_dates_timestamp[target_idx])
-    ) {
-      target_idx++;
-    }
-
-    taskSectionId = target_idx;
-    taskIndex = 0;
-
-    // Return taskSectionId and taskIndex here.
-    console.log("taskSectionId");
-    console.log(taskSectionId);
-    console.log("taskIndex");
-    console.log(taskIndex);
-
-    // console.log(target_idx);
-
-    // Generate scheduleDateTime using the algo
-    console.log("NEW: ", newTask);
-
-    // Required for creating task on the backend
-    newTask["status"] = "pending";
-    newTask["scheduleDateTime"] = fromRawToDb("202111011400");
-    newTask["dueDateTime"] = jsDateToDBDate(
-      new Date(newTask.dueDate + " " + newTask.dueTime + ":00")
-    );
-
-    // Extras for the UI
-    newTask["taskId"] = "From API result";
-    newTask["taskSectionId"] = taskSectionId;
-    newTask["taskIndex"] = taskIndex;
-    newTask["time"] = "14:00-16:00";
-    newTask["dueInXDays"] = 5;
-    newTask["colorScheme"] =
-      store.getState().taskview.allCommitments[
-        newTask.commitmentId
-      ].colorScheme;
-
-    // await api.addTask(
-    //   newTask,
-    //   (result) => {
-    //     console.log(result)
-    //     newTask["taskId"] = result.taskId;
-    //     dispatch({
-    //       type: TASK_ADD_TASK,
-    //       newTask: newTask,
-    //     });
-    //   },
-    //   (e) => console.log(e)
-    // );
   } else {
-    console.log("The task should only be edited");
-    console.log("Task ID is: ", newTask.taskId);
-    console.log("Section ID is: ", newTask.taskSectionId);
-    console.log("Task Index is: ", newTask.taskIndex);
-
     let oldTask =
       store.getState().taskview.allPendingTasks[newTask.taskSectionId].tasks[
         newTask.taskIndex
       ];
-
-    console.log(oldTask, newTask);
 
     if (
       oldTask.dueDate == newTask.dueDate &&
@@ -482,43 +410,6 @@ export const addTaskAction = (newTask) => async (dispatch) => {
       );
     }
   }
-
-  // Ging Prep for Algo
-  if (newTask.taskId == undefined && false) {
-    // Generate scheduleDateTime using the algo
-    console.log("NEW: ", newTask);
-
-    // Required for creating task on the backend
-    newTask["status"] = "pending";
-    newTask["scheduleDateTime"] = fromRawToDb("202111011400");
-    newTask["dueDateTime"] = jsDateToDBDate(
-      new Date(newTask.dueDate + " " + newTask.dueTime + ":00")
-    );
-
-    // Extras for the UI
-    newTask["taskId"] = "From API result";
-    newTask["taskSectionId"] = taskSectionId;
-    newTask["taskIndex"] = taskIndex;
-    newTask["time"] = "14:00-16:00";
-    newTask["dueInXDays"] = 5;
-    newTask["colorScheme"] =
-      store.getState().taskview.allCommitments[
-        newTask.commitmentId
-      ].colorScheme;
-
-    // await api.addTask(
-    //   newTask,
-    //   (result) => {
-    //     console.log(result)
-    //     newTask["taskId"] = result.taskId;
-    //     dispatch({
-    //       type: TASK_ADD_TASK,
-    //       newTask: newTask,
-    //     });
-    //   },
-    //   (e) => console.log(e)
-    // );
-  }
 };
 
 export const commitmentFormEditCommitmentAction =
@@ -533,7 +424,6 @@ export const commitmentFormSubmitAction = (formInput) => async (dispatch) => {
   await api.addCommitment(
     formInput,
     (result) => {
-      console.log(result);
       dispatch({
         type: COMMITMENT_FORM_SUBMIT,
         commitmentName: result.commitmentName,
