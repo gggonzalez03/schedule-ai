@@ -65,7 +65,6 @@ export default function taskview(state = store.taskview, action) {
         commitmentNameToAddTaskTo: action.commitmentName,
       };
     case TASK_ADD_TASK:
-
       state.allPendingTasks[action.newTask.taskSectionId].tasks = [
         ...state.allPendingTasks[action.newTask.taskSectionId].tasks,
         action.newTask,
@@ -75,13 +74,24 @@ export default function taskview(state = store.taskview, action) {
         JSON.stringify(state.allCommitments)
       );
 
-      allCommitmentsClone[action.newTask.commitmentId].taskCount++;
+      allCommitmentsClone[action.newTask.commitmentId].taskCount =
+        allCommitmentsClone[action.newTask.commitmentId].taskCount + 1;
+
+        console.log(allCommitmentsClone[action.newTask.commitmentId])
 
       return {
         ...state,
         allPendingTasks: [...state.allPendingTasks],
         taskEditFormVisible: false,
         allCommitments: { ...allCommitmentsClone },
+        dashboard: {
+          dueThisWeekCount:
+            state.dashboard.dueThisWeekCount + action.dueThisWeekCountAdd,
+          dueTodayCount:
+            state.dashboard.dueTodayCount + action.dueTodayCountAdd,
+          dueTomorrowCount:
+            state.dashboard.dueTomorrowCount + action.dueTomorrowCountAdd,
+        },
       };
     case TASK_FORM_EDIT_COMMITMENT:
       return {
@@ -185,10 +195,15 @@ export default function taskview(state = store.taskview, action) {
         commitmentEditFormVisible: false,
       };
     case TASK_CLOSE_TASK: {
-
       let allPendingTasksClone = JSON.parse(
         JSON.stringify(state.allPendingTasks)
       );
+
+      let allCommitmentsClone = JSON.parse(
+        JSON.stringify(state.allCommitments)
+      );
+
+      allCommitmentsClone[action.commitmentId].taskCount--;
 
       allPendingTasksClone[action.taskSectionId].tasks.splice(
         action.taskIndex,
@@ -199,6 +214,15 @@ export default function taskview(state = store.taskview, action) {
         ...state,
         allPendingTasks: [...allPendingTasksClone],
         taskEditFormVisible: false,
+        allCommitments: { ...allCommitmentsClone },
+        dashboard: {
+          dueThisWeekCount:
+            state.dashboard.dueThisWeekCount + action.dueThisWeekCountAdd,
+          dueTodayCount:
+            state.dashboard.dueTodayCount + action.dueTodayCountAdd,
+          dueTomorrowCount:
+            state.dashboard.dueTomorrowCount + action.dueTomorrowCountAdd,
+        },
       };
     }
     case TASK_EDIT_TASK: {

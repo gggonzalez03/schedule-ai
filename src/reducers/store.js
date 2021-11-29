@@ -26,6 +26,11 @@ const store = {
     },
     taskEditFormVisible: false,
     commitmentEditFormVisible: false,
+    dashboard: {
+      dueThisWeekCount: 0,
+      dueTodayCount: 0,
+      dueTomorrowCount: 0,
+    },
   },
 };
 

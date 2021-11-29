@@ -30,7 +30,11 @@ class CommitmentsList extends Component {
                   key={key}
                   id={key}
                   title={allCommitments[key].commitmentName}
-                  subtitle={allCommitments[key].taskCount + " Task(s)"}
+                  subtitle={
+                    (allCommitments[key].taskCount
+                      ? allCommitments[key].taskCount
+                      : 0) + " Task(s)"
+                  }
                   dotColor={allCommitments[key].colorScheme}
                   selected={selectedCommitment == key}
                 ></CommitmentItem>

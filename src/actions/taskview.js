@@ -144,31 +144,35 @@ export const fetchTasksAction = (username) => async (dispatch) => {
   await api.fetchTasks(
     { username: username },
     (result) => {
+      let dueTodayCount = 0;
+      let dueTomorrowCount = 0;
+      let dueThisWeekCount = 0;
+
       if (result == null || result == undefined || result.length <= 0) {
         let today = new Date();
         let pendingTasksGroupedByScheduleDate = new Array(7)
-        .fill()
-        .map((_, i) => {
-          let dateString = today.toDateString();
-          today.setDate(today.getDate() + 1);
-          return {
-            date: dateString,
-            tasks: [],
-          };
-        });
+          .fill()
+          .map((_, i) => {
+            let dateString = today.toDateString();
+            today.setDate(today.getDate() + 1);
+            return {
+              date: dateString,
+              tasks: [],
+            };
+          });
 
         dispatch({
           type: TASK_FETCH_TASKS,
           allPendingTasks: pendingTasksGroupedByScheduleDate,
+          dueThisWeekCount: dueThisWeekCount,
+          dueTodayCount: dueTodayCount,
+          dueTomorrowCount: dueTomorrowCount,
         });
 
         return;
-      };
+      }
 
       let current_day = new Date();
-      let dueTodayCount = 0;
-      let dueTomorrowCount = 0;
-      let dueThisWeekCount = 0;
 
       let pendingTasks = [];
       let allCommitments = store.getState().taskview.allCommitments;
@@ -279,11 +283,6 @@ export const fetchTasksAction = (username) => async (dispatch) => {
         }
       });
 
-      // console.log(pendingTasksGroupedByScheduleDate);
-      // console.log(result);
-
-      console.log("Res:", pendingTasksGroupedByScheduleDate);
-
       dispatch({
         type: TASK_FETCH_TASKS,
         allPendingTasksRaw: result,
@@ -385,7 +384,8 @@ export const addTaskAction = (newTask) => async (dispatch) => {
         ":00";
 
       let dueInXDays = getDiffInDays(current_day, dueDateTimeJS);
-      newTask["dueInXDays"] = dueInXDays = dueInXDays < 0 ? 0 : dueInXDays;
+      dueInXDays = dueInXDays < 0 ? 0 : dueInXDays;
+      newTask["dueInXDays"] = dueInXDays;
       newTask["colorScheme"] =
         store.getState().taskview.allCommitments[
           newTask.commitmentId
@@ -398,6 +398,9 @@ export const addTaskAction = (newTask) => async (dispatch) => {
           dispatch({
             type: TASK_ADD_TASK,
             newTask: newTask,
+            dueThisWeekCountAdd: 1,
+            dueTodayCountAdd: parseInt(dueInXDays == 0 ? 1 : 0),
+            dueTomorrowCountAdd: parseInt(dueInXDays == 1 ? 1 : 0),
           });
         },
         (e) => console.log(e)
@@ -515,6 +518,9 @@ export const closeTaskAction = (task) => async (dispatch) => {
         dispatch({
           type: TASK_CLOSE_TASK,
           ...task,
+          dueThisWeekCountAdd: -1,
+          dueTodayCountAdd: parseInt(task.dueInXDays == 0 ? -1 : 0),
+          dueTomorrowCountAdd: parseInt(task.dueInXDays == 1 ? -1 : 0),
         });
       }
     },
