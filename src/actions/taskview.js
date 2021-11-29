@@ -293,7 +293,6 @@ export const addTaskPrepareAction = (commitmentName) => (dispatch) => {
 
 export const addTaskAction = (newTask) => async (dispatch) => {
   if (newTask.taskId == undefined) {
-    console.log("New task should be added");
     /**
      * TODO: Cindy
      * Run algorithm here
@@ -309,35 +308,146 @@ export const addTaskAction = (newTask) => async (dispatch) => {
      * taskIndex is the index within an allPendingTasks object the task should be in
      */
 
-    console.log(store.getState().taskview.allPendingTasks);
-    console.log(store.getState().taskview.allPendingTasksRaw);
+    let newTaskDueDate = new Date(newTask.dueDate);
+    newTask.dueDateTime =
+      newTaskDueDate.getMonth() +
+      1 +
+      "/" +
+      newTaskDueDate.getDate() +
+      "/" +
+      newTaskDueDate.getFullYear() +
+      ", " +
+      newTask.dueTime;
 
-    // var current_dates_timestamp = [];
+    var current_dates_timestamp = [];
+    var target_due_time = newTask.dueDateTime;
+    var target_length = newTask.estimatedTimeOfCompletion;
+    var target_due_date = target_due_time.substring(
+      0,
+      target_due_time.indexOf(",")
+    );
+    var target_due_time = target_due_time
+      .substring(target_due_time.indexOf(",") + 1)
+      .replace(/ /g, "");
+    var target_due_time_timestamp = new Date(target_due_date).getTime();
 
-    // var target_due_time = newTask.dueDateTime;
-    // var target_length = newTask.estimatedTimeOfCompletion;
-    // var target_due_time_timestamp = new Date(newTask.dueDateTime).getTime();
+    var target_due_time_stamp = new Date(
+      "1/1/2021" + " " + target_due_time
+    ).getTime();
+    target_due_time_stamp =
+      target_due_time_stamp - target_length * 1000 * 60 * 60;
 
-    // store.getState().taskview.allPendingTasks.forEach((element) => {
-    //   current_dates_timestamp.push(new Date(element.date).getTime());
-    // });
+    var target_due_time_stamp = new Date(
+      "1/1/2021" + " " + target_due_time
+    ).getTime();
+    target_due_time_stamp =
+      target_due_time_stamp - target_length * 1000 * 60 * 60;
 
-    // // Sort the dates array
-    // current_dates_timestamp.sort();
+    store.getState().taskview.allPendingTasks.forEach((element) => {
+      current_dates_timestamp.push(new Date(element.date).getTime());
+    });
 
-    // console.log(target_due_time_timestamp);
-    // console.log(current_dates_timestamp);
+    var target_idx = 0;
+    var taskSectionId = 0;
+    var taskIndex = 0;
+    var result_found = false;
 
-    // var target_idx = 0;
+    // Case 1: when the date already existed
 
-    // while (
-    //   (target_idx < current_dates_timestamp.length) &
-    //   (target_due_time_timestamp > current_dates_timestamp[target_idx])
-    // ) {
-    //   target_idx++;
-    // }
+    while (target_idx < current_dates_timestamp.length) {
+      if (target_due_time_timestamp == current_dates_timestamp[target_idx]) {
+        result_found = true;
+        break;
+      }
+      target_idx++;
+    }
+
+    taskSectionId = target_idx;
+
+    var task_info = store.getState().taskview.allPendingTasks[taskSectionId];
+
+    if (result_found) {
+      if (task_info.tasks.length == 0) {
+        taskIndex = 0;
+      } else {
+        var idx = 0;
+        while (idx < task_info.tasks.length) {
+          var task_time = task_info.tasks[idx].time;
+          var cur_start_time = task_info.tasks[idx].time.substring(
+            0,
+            task_time.indexOf("-")
+          );
+          var cur_start_time_stamp = new Date(
+            "1/1/2021" + " " + cur_start_time
+          ).getTime();
+
+          if (target_due_time_stamp < cur_start_time_stamp) {
+            break;
+          }
+          idx++;
+        }
+        taskIndex = idx;
+      }
+      // Return taskSectionId and taskIndex here.
+      console.log("taskSectionId");
+      console.log(taskSectionId);
+      console.log("taskIndex");
+      console.log(taskIndex);
+    }
+
+    // Case 2: when the date did not exist
+
+    while (
+      (target_idx < current_dates_timestamp.length) &
+      (target_due_time_timestamp > current_dates_timestamp[target_idx])
+    ) {
+      target_idx++;
+    }
+
+    taskSectionId = target_idx;
+    taskIndex = 0;
+
+    // Return taskSectionId and taskIndex here.
+    console.log("taskSectionId");
+    console.log(taskSectionId);
+    console.log("taskIndex");
+    console.log(taskIndex);
 
     // console.log(target_idx);
+
+    // Generate scheduleDateTime using the algo
+    console.log("NEW: ", newTask);
+
+    // Required for creating task on the backend
+    newTask["status"] = "pending";
+    newTask["scheduleDateTime"] = fromRawToDb("202111011400");
+    newTask["dueDateTime"] = jsDateToDBDate(
+      new Date(newTask.dueDate + " " + newTask.dueTime + ":00")
+    );
+
+    // Extras for the UI
+    newTask["taskId"] = "From API result";
+    newTask["taskSectionId"] = taskSectionId;
+    newTask["taskIndex"] = taskIndex;
+    newTask["time"] = "14:00-16:00";
+    newTask["dueInXDays"] = 5;
+    newTask["colorScheme"] =
+      store.getState().taskview.allCommitments[
+        newTask.commitmentId
+      ].colorScheme;
+
+    // await api.addTask(
+    //   newTask,
+    //   (result) => {
+    //     console.log(result)
+    //     newTask["taskId"] = result.taskId;
+    //     dispatch({
+    //       type: TASK_ADD_TASK,
+    //       newTask: newTask,
+    //     });
+    //   },
+    //   (e) => console.log(e)
+    // );
   } else {
     console.log("The task should only be edited");
     console.log("Task ID is: ", newTask.taskId);
@@ -387,8 +497,8 @@ export const addTaskAction = (newTask) => async (dispatch) => {
 
     // Extras for the UI
     newTask["taskId"] = "From API result";
-    newTask["taskSectionId"] = 1;
-    // newTask["taskIndex"] = 1;
+    newTask["taskSectionId"] = taskSectionId;
+    newTask["taskIndex"] = taskIndex;
     newTask["time"] = "14:00-16:00";
     newTask["dueInXDays"] = 5;
     newTask["colorScheme"] =
@@ -400,6 +510,7 @@ export const addTaskAction = (newTask) => async (dispatch) => {
     //   newTask,
     //   (result) => {
     //     console.log(result)
+    //     newTask["taskId"] = result.taskId;
     //     dispatch({
     //       type: TASK_ADD_TASK,
     //       newTask: newTask,
