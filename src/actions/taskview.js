@@ -288,7 +288,9 @@ export const addTaskAction = (newTask) => (dispatch) => {
 
     var target_due_time = newTask.dueDateTime
     var target_length = newTask.estimatedTimeOfCompletion
-    var target_due_time_timestamp = (new Date(newTask.dueDateTime)).getTime();
+    var target_due_date = target_due_time.substring(0, target_due_time.indexOf(','));
+    var target_due_time = target_due_time.substring(target_due_time.indexOf(',') + 1);
+    var target_due_time_timestamp = (new Date(target_due_date)).getTime();
 
     (store.getState().taskview.allPendingTasks).forEach(element => {
       current_dates_timestamp.push((new Date(element.date)).getTime());
@@ -297,17 +299,54 @@ export const addTaskAction = (newTask) => (dispatch) => {
   // Sort the dates array
   current_dates_timestamp.sort();
 
-  console.log(target_due_time_timestamp);
-  console.log(current_dates_timestamp);
-
   var target_idx = 0;
+  var taskSectionId = 0;
+  var taskIndex = 0;
+  var result_found = false;
+
+  // Case 1: when the date already existed
+
+  while (target_idx < current_dates_timestamp.length) {
+    if (target_due_time_timestamp == current_dates_timestamp[target_idx]) {
+      result_found = true;
+      break;
+    }
+    target_idx++;
+  }
+
+  taskSectionId = target_idx;
+
+  var task_info = store.getState().taskview.allPendingTasks[taskSectionId];
+
+  if (task_info.tasks.length == 0) {
+    taskIndex = 0; 
+  } else {
+    taskIndex = task_info.tasks.length + 1;
+  }
+
+  if (result_found) {
+    // Return taskSectionId and taskIndex here.
+    console.log("taskSectionId");
+    console.log(taskSectionId);
+    console.log("taskIndex");
+    console.log(taskIndex);
+  }
+
+  // Case 2: when the date did not exist
 
   while (target_idx < current_dates_timestamp.length 
     & target_due_time_timestamp > current_dates_timestamp[target_idx]) {
     target_idx++;
   }
-  
-  console.log(target_idx);
+
+  taskSectionId = target_idx;
+  taskIndex = 0;
+
+  // Return taskSectionId and taskIndex here.
+    console.log("taskSectionId");
+    console.log(taskSectionId);
+    console.log("taskIndex");
+    console.log(taskIndex);
 
   } else {
     console.log("The task should only be edited");
